@@ -3225,7 +3225,7 @@
                     </o>
                     <o>
                       <v n="Id">397264524L</v>
-                      <v n="Value">"HMI.iBlowdownTimeProgress"</v>
+                      <v n="Value">"gHMI.iBlowdownTimeProgress"</v>
                     </o>
                     <o>
                       <v n="Id">2174865440L</v>
@@ -3706,7 +3706,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"HMI.bEStopPressed"</v>
+                      <v n="Value">"gHMI.bEStopPressed"</v>
                     </o>
                     <o>
                       <v n="Id">2597686782L</v>
@@ -6455,7 +6455,7 @@
                     </o>
                     <o>
                       <v n="Id">2477733581L</v>
-                      <v n="Value">"HMI.seedTime"</v>
+                      <v n="Value">"gHMI.seedTime"</v>
                     </o>
                     <o>
                       <v n="Id">2597686782L</v>

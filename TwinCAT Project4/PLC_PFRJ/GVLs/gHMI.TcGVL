@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
-  <GVL Name="HMI" Id="{8ff68e5f-22ed-40d6-906b-4c6ef65f5858}">
+  <GVL Name="gHMI" Id="{8ff68e5f-22ed-40d6-906b-4c6ef65f5858}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL
 	//HMI BUTTONS

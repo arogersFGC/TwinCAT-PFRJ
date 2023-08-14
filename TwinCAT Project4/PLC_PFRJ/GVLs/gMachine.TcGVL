@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="gMachine" Id="{035bb31a-d92e-4604-9000-7559b176f307}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	testCell : TestCell;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

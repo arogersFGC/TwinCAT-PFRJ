@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TEST_STATE" Id="{bc67abf6-b2c4-4795-af46-f86788ece24f}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE TEST_STATE :
+(
+	STARTUP,
+	IDLE,
+	CHECK_TEST_READY,
+	SET_TEST_VARIABLES,
+	START_TEST,
+	RUN_TEST,
+	ERROR,
+	COMPLETE,
+	START_BLOWDOWN,
+	BLOWDOWN,
+	BLOWDOWN_COMPLETE,
+	STOP,
+	ESTOP,
+	WAIT_FOR_RESET,
+	RESETTING
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

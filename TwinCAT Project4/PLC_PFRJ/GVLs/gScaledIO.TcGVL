@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
-  <GVL Name="gScaledInputs" Id="{d4b685b7-b49f-4044-b0e2-abfab7a9f699}">
+  <GVL Name="gScaledIO" Id="{d4b685b7-b49f-4044-b0e2-abfab7a9f699}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL
 	monitoredValues : ARRAY[0..16] OF MonitoredValue;

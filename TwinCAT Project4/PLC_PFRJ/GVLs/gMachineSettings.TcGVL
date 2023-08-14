@@ -4,26 +4,8 @@
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL
 	
-	//Logic Thresholds
-	//Air Thresholds
-	minAirPressure          : REAL := 30;
-	maxAirPressureDelay     : TIME := T#2S;
-	minAirSettlingTime      : TIME := T#0.5S;
-	minFacilityPressure     : REAL := 150;
-	
-	//Methane Thresholds
-	minMethanePressure      : REAL := 20;
-	maxMethanePressureDelay : TIME := T#1S;
-	minMethaneSettlingTime  : TIME := T#0.25S;
-	
-	minCombustorPressure    : REAL;
-	minCombustorTemp        : REAL;
-	
-	maxZVSIgnitionAttempts  : INT  := 5;
-	maxSeedTime             : TIME := T#7S;
-	
-	pistonDelayTime         : TIME := T#0.25S;
-	powderIgnitionTime      : TIME := T#2S; 
+	safetyParameters : SafetyParameters;
+	testParameters   : TestParameters;
 	
 	
 	//Communications

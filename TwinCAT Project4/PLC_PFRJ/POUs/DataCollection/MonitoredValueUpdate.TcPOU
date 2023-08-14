@@ -116,7 +116,7 @@ monitoredValues[7].scaledValue := ScaledValue(monitoredValues[7]);
 monitoredValues[8].rawValue := gIO.AI_LoadCellWeight;
 monitoredValues[8].scaledValue := ScaledValue(monitoredValues[8]);
 
-gScaledInputs.monitoredValues := monitoredValues;
+gScaledIO.monitoredValues := monitoredValues;
 ]]></ST>
     </Implementation>
     <LineIds Name="MonitoredValueUpdate">

@@ -3,43 +3,8 @@
   <POU Name="MAIN" Id="{95f0d3d7-ef12-463a-a495-742fe761b35c}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	//Test timers
-	fbTON_TestTimer              :  TON;
-	fbTON_AirAtPressure          :  TON;
-	fbTon_ZVSTimer               :  TON;
-	fbTon_MethaneTimer           :  TON;
-	fbTon_SeedTime               :  TON;
-	fbTon_PistonDelay            :  TON;
-	fbTon_PowderIgnitionDelay	 :  TON;
-	fbTon_EjectorDelay           :  TON;
-	fbTon_ZVSTrigger             :  TON;
 	
-	//Test Signals and Pulse Generators
-	TSIG_ZVSIgnite               :  TSIG;
-	TSIG_CombustorAirSolenoid    :  TSIG;
-	TSIG_MethaneSolenoid         :  TSIG;
-	TSIG_WaterQuenchSolenoid     :  TSIG;
-	TSIG_SeederExtendSolenoid    :  TSIG;
-	TSIG_SeederRetractSolenoid   :  TSIG;
-	TSIG_FluidizationSolenoid    :  TSIG;
 	
-	//MAIN PROGRAM STATE MACHINE
-	state : MAIN_STATE := MAIN_STATE.STARTUP;
-	
-	//HMI_Commands
-	command_StartTest : BOOL;
-	command_StopTest  : BOOL;
-	command_Reset     : BOOL;
-	
-	//test variables
-	testComplete     : BOOL;
-	testTime         : TIME;
-	airPressureTime  : TIME := T#2S;
-	fbIolSlave       : FB_IolSlave;
-	
-	startup          : BOOL  := TRUE;
-	bUserSeedGoAhead : BOOL := FALSE;
-	bRetryIgnition     : BOOL := FALSE;
 	
 	//IO Link parameters
     nAdsError               : E_AdsErr := E_AdsErr.NOERR;
@@ -61,8 +26,8 @@ CASE state OF
 			startup := FALSE;
 			fbIolSlave.MasterAoeNetId := F_CreateAmsNetId(gMachineSettings.IoLinkAmsId);
     		fbIolSlave.Port :=  gMachineSettings.IoLinkPort;
-			TSIG_ZVSIgnite(Init:=FALSE, pIO:=ADR(gIO.DO_ZVSIgnite), Start_Time:=INT_TO_TIME(HMI.iZVSStartTime), End_Time:=INT_TO_TIME(HMI.iZVSStopTime));
-			TSIG_CombustorAirSolenoid(Init:=FALSE, pIO:=ADR(gIO.DO_CombustorAirSolenoid), Start_Time:=INT_TO_TIME(HMI.iAirStartTime), End_Time:=INT_TO_TIME(HMI.iAirStopTime));
+			TSIG_ZVSIgnite(Init:=FALSE, pIO:=ADR(gIO.DO_ZVSIgnite), Start_Time:=INT_TO_TIME(gHMI.iZVSStartTime), End_Time:=INT_TO_TIME(gHMI.iZVSStopTime));
+			TSIG_CombustorAirSolenoid(Init:=FALSE, pIO:=ADR(gIO.DO_CombustorAirSolenoid), Start_Time:=INT_TO_TIME(gHMI.iAirStartTime), End_Time:=INT_TO_TIME(gHMI.iAirStopTime));
 			state := MAIN_STATE.IDLE;	
 		END_IF
 		
@@ -81,99 +46,16 @@ CASE state OF
 	MAIN_STATE.START_TEST:
 		gIO.DO_CollectData := TRUE;
 		gIO.DO_WaterQuenchSolenoid := TRUE;
-		state := MAIN_STATE.START_AIR;
-	MAIN_STATE.START_AIR:
-		gIO.DO_CombustorAirSolenoid := TRUE;
-		state := MAIN_STATE.CHECK_AIR;
-	MAIN_STATE.CHECK_AIR:
-		fbTON_AirAtPressure(IN:=TRUE, PT:=gMachineSettings.maxAirPressureDelay);
-		IF gScaledInputs.monitoredValues[1].scaledValue > gMachineSettings.minAirPressure AND fbTON_AirAtPressure.ET > gMachineSettings.minAirSettlingTime THEN
-			fbTON_AirAtPressure(IN:=FALSE);
-			state := MAIN_STATE.START_METHANE;
-		ELSIF fbTON_AirAtPressure.Q THEN
-			fbTON_AirAtPressure(IN:=FALSE);
-			state := MAIN_STATE.STOP;
-		ELSE
-			state := MAIN_STATE.CHECK_AIR;
-		END_IF
-	MAIN_STATE.START_METHANE: 
-		gIO.DO_MethaneSolenoid := TRUE;
-		state := MAIN_STATE.CHECK_METHANE;
-	MAIN_STATE.CHECK_METHANE: 
-		fbTON_MethaneTimer(IN:=TRUE, PT:=gMachineSettings.maxMethanePressureDelay);
-		IF gScaledInputs.monitoredValues[2].scaledValue > gMachineSettings.minMethanePressure AND fbTON_MethaneTimer.ET > gMachineSettings. minMethaneSettlingTime THEN
-			fbTON_MethaneTimer(IN:=FALSE);
-			state := MAIN_STATE.START_COMBUSTION;
-		ELSIF fbTON_MethaneTimer.Q THEN
-			fbTON_MethaneTimer(IN:=FALSE);
-			state := MAIN_STATE.STOP;
-		ELSE
-			state := MAIN_STATE.CHECK_METHANE;
-		END_IF
-	MAIN_STATE.START_COMBUSTION: 
-		gIO.DO_ZVSIgnite := TRUE;
-		fbTon_ZVSTrigger(IN:=TRUE, PT:=T#2S);
-		IF fbTon_ZVSTrigger.Q THEN
-			gIO.DO_ZVSIgnite := FALSE;
-			fbTon_ZVSTrigger(IN:=FALSE);
-			state := MAIN_STATE.CHECK_COMBUSTION; 
-		END_IF
-	MAIN_STATE.CHECK_COMBUSTION:
-		IF bUserSeedGoAhead THEN
-			bUserSeedGoAhead := FALSE;
-			state := MAIN_STATE.START_EJECTOR;
-		ELSIF bRetryIgnition THEN
-			state := MAIN_STATE.START_COMBUSTION;
-		ELSE
-			state := MAIN_STATE.CHECK_COMBUSTION;
-		END_IF
-	MAIN_STATE.START_EJECTOR:
-		gIO.DO_EjectorSolenoid := TRUE;
-		fbTon_EjectorDelay(IN:=TRUE, PT:=T#1S);
-		IF fbTon_EjectorDelay.Q THEN
-			fbTon_EjectorDelay(IN:=FALSE);
-			state := MAIN_STATE.CHECK_EJECTOR;
-		ELSE
-			state := MAIN_STATE.START_EJECTOR;
-		END_IF
-		
-	MAIN_STATE.CHECK_EJECTOR:
-		state := MAIN_STATE.RUN_SEED;
 	
-	MAIN_STATE.RUN_SEED:
-		gIO.DO_SeederFluidization := TRUE;
-		IF gMachineSettings.motorSeederActive THEN 
-			hr := fbIolSlave.Write_INT8(16#0002, 0, 16#C8);
-			IF NOT F_IolIsBusy(hr) THEN
-				IF FAILED(hr) THEN
-					bError := TRUE;
-					sErrorTxt := fbIolSlave.ErrorTxt;
-					nAdsError := F_IolGetAdsError(hr);
-					nIolError := F_IolGetIolError(hr);
-					state := MAIN_STATE.STOP;
-				END_IF
-			END_IF
-		ELSIF gMachineSettings.pistonSeederActive THEN
-			gIO.DO_SeederExtendSolenoid := TRUE;
-		END_IF
-		state := MAIN_STATE.WAIT_FOR_EOT;
-	MAIN_STATE.WAIT_FOR_EOT: 
-		gIO.DO_ZVSIgnite := TRUE;
-		fbTon_SeedTime(IN:=TRUE, PT:=gMachineSettings.maxSeedTime);
-		fbTon_PowderIgnitionDelay(IN:=TRUE, PT:=gMachineSettings.powderIgnitionTime);
-		IF fbTon_PowderIgnitionDelay.Q THEN
-			gIO.DO_MethaneSolenoid := FALSE;
-			gIO.DO_ZVSIgnite := FALSE;
-		END_IF
-		IF gMachineSettings.motorSeederActive AND gIO.DI_MotorExtendLimitSensor THEN
-			state := MAIN_STATE.TEST_COMPLETE;
-		ELSIF gMachineSettings.pistonSeederActive AND gIO.DI_SeederExtendLimitSensor THEN 
-			state := MAIN_STATE.TEST_COMPLETE;
-		ELSIF fbTon_SeedTime.Q THEN
-			state := MAIN_STATE.TEST_COMPLETE;
-		ELSE
-			state := MAIN_STATE.WAIT_FOR_EOT;
-		END_IF	
+	MAIN_STATE.RUN_TEST:
+		TSIG_ZVSIgnite(Init:=TRUE, );
+		TSIG_CombustorAirSolenoid(Init:=TRUE);
+		TSIG_MethaneSolenoid();
+		TSIG_WaterQuenchSolenoid();
+		TSIG_SeederExtendSolenoid();
+		TSIG_SeederRetractSolenoid();
+		TSIG_FluidizationSolenoid();
+	
 	MAIN_STATE.TEST_COMPLETE:
 		//reset timers
 		fbTON_TestTimer(IN:=FALSE);
@@ -218,13 +100,13 @@ CASE state OF
 		//run purge air 
 	MAIN_STATE.BLOWDOWN:
 		TSIG_CombustorAirSolenoid(Init:=TRUE, Start_Time := INT_TO_TIME(0), End_Time := INT_TO_TIME(5000));
-		HMI.iBlowdownTimeProgress := REAL_TO_INT(TIME_TO_INT(TSIG_CombustorAirSolenoid.ET - TSIG_CombustorAirSolenoid.Start_Time) * (100) / TIME_TO_INT(TSIG_CombustorAirSolenoid.End_Time - TSIG_CombustorAirSolenoid.Start_Time));
+		gHMI.iBlowdownTimeProgress := REAL_TO_INT(TIME_TO_INT(TSIG_CombustorAirSolenoid.ET - TSIG_CombustorAirSolenoid.Start_Time) * (100) / TIME_TO_INT(TSIG_CombustorAirSolenoid.End_Time - TSIG_CombustorAirSolenoid.Start_Time));
 		IF NOT TSIG_CombustorAirSolenoid.Q THEN
 			state := MAIN_STATE.BLOWDOWN_COMPLETE;
 		END_IF
 	MAIN_STATE.BLOWDOWN_COMPLETE:
 		TSIG_CombustorAirSolenoid(Init:=FALSE);
-		HMI.iBlowdownTimeProgress := 0;
+		gHMI.iBlowdownTimeProgress := 0;
 		state := MAIN_STATE.IDLE;
 		
 	MAIN_STATE.ESTOP: 
@@ -269,12 +151,12 @@ END_CASE
 
 
 //Safety watchdog
-IF gScaledInputs.monitoredValues[4].scaledValue < gMachineSettings.minFacilityPressure AND gIO.DO_EjectorSolenoid THEN
+IF gScaledIO.monitoredValues[4].scaledValue < gMachineSettings.minFacilityPressure AND gIO.DO_EjectorSolenoid THEN
 	state := MAIN_STATE.STOP;
 END_IF
 
-HMI.bEStopPressed := NOT gIO.DI_24VAtSolenoids;
-HMI.seedTime      := TIME_TO_STRING(fbTon_SeedTime.ET);
+gHMI.bEStopPressed := NOT gIO.DI_24VAtSolenoids;
+gHMI.seedTime      := TIME_TO_STRING(fbTon_SeedTime.ET);
 IF command_StopTest THEN
 	command_StopTest := FALSE;
 	state := MAIN_STATE.STOP;
@@ -301,74 +183,10 @@ END_IF
       <LineId Id="572" Count="0" />
       <LineId Id="1186" Count="0" />
       <LineId Id="1261" Count="0" />
-      <LineId Id="574" Count="0" />
-      <LineId Id="991" Count="2" />
-      <LineId Id="575" Count="0" />
-      <LineId Id="1000" Count="0" />
-      <LineId Id="994" Count="1" />
-      <LineId Id="1411" Count="0" />
-      <LineId Id="998" Count="0" />
-      <LineId Id="1412" Count="0" />
-      <LineId Id="1001" Count="2" />
-      <LineId Id="996" Count="1" />
-      <LineId Id="1004" Count="0" />
-      <LineId Id="1025" Count="0" />
-      <LineId Id="1005" Count="0" />
-      <LineId Id="1018" Count="2" />
-      <LineId Id="1409" Count="0" />
-      <LineId Id="1021" Count="0" />
-      <LineId Id="1410" Count="0" />
-      <LineId Id="1022" Count="2" />
-      <LineId Id="1017" Count="0" />
-      <LineId Id="1016" Count="0" />
-      <LineId Id="1349" Count="0" />
-      <LineId Id="1032" Count="0" />
-      <LineId Id="1344" Count="0" />
-      <LineId Id="1347" Count="0" />
-      <LineId Id="1345" Count="0" />
-      <LineId Id="1348" Count="0" />
-      <LineId Id="1346" Count="0" />
-      <LineId Id="1033" Count="1" />
-      <LineId Id="1354" Count="0" />
-      <LineId Id="1040" Count="0" />
-      <LineId Id="1036" Count="0" />
-      <LineId Id="1039" Count="0" />
-      <LineId Id="1041" Count="1" />
-      <LineId Id="1037" Count="0" />
-      <LineId Id="1326" Count="0" />
-      <LineId Id="1355" Count="0" />
-      <LineId Id="1337" Count="1" />
-      <LineId Id="1352" Count="0" />
-      <LineId Id="1340" Count="0" />
-      <LineId Id="1350" Count="1" />
-      <LineId Id="1339" Count="0" />
-      <LineId Id="1341" Count="0" />
-      <LineId Id="1330" Count="0" />
-      <LineId Id="1342" Count="0" />
       <LineId Id="1328" Count="0" />
       <LineId Id="1030" Count="0" />
-      <LineId Id="1071" Count="0" />
-      <LineId Id="1078" Count="0" />
-      <LineId Id="1052" Count="6" />
-      <LineId Id="1076" Count="0" />
-      <LineId Id="1059" Count="0" />
-      <LineId Id="1046" Count="0" />
-      <LineId Id="1044" Count="0" />
-      <LineId Id="1072" Count="0" />
-      <LineId Id="1074" Count="0" />
+      <LineId Id="1466" Count="5" />
       <LineId Id="1080" Count="0" />
-      <LineId Id="1082" Count="0" />
-      <LineId Id="1414" Count="0" />
-      <LineId Id="1089" Count="0" />
-      <LineId Id="1316" Count="0" />
-      <LineId Id="1318" Count="1" />
-      <LineId Id="1415" Count="0" />
-      <LineId Id="1317" Count="0" />
-      <LineId Id="1083" Count="0" />
-      <LineId Id="1087" Count="0" />
-      <LineId Id="1084" Count="0" />
-      <LineId Id="1086" Count="0" />
-      <LineId Id="1091" Count="3" />
       <LineId Id="1085" Count="0" />
       <LineId Id="591" Count="1" />
       <LineId Id="1193" Count="3" />

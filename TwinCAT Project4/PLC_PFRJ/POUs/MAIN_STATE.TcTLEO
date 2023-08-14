@@ -10,17 +10,8 @@ TYPE MAIN_STATE :
 	CHECK_TEST_READY,
 	SET_TEST_VARIABLES,
 	START_TEST,
-	START_AIR,
-	CHECK_AIR,
-	START_METHANE,
-	CHECK_METHANE,
-	START_COMBUSTION,
-	CHECK_COMBUSTION,
-	WAIT_FOR_USER,
-	START_EJECTOR,
-	CHECK_EJECTOR,
-	RUN_SEED,
-	WAIT_FOR_EOT,
+	RUN_TEST,
+	TEST_ERROR,
 	TEST_COMPLETE,
 	START_BLOWDOWN,
 	BLOWDOWN,
@@ -62,57 +53,12 @@ END_TYPE
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
-              <v n="TextID">"START_AIR"</v>
+              <v n="TextID">"RUN_TEST"</v>
               <v n="TextDefault">""</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
-              <v n="TextID">"CHECK_AIR"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"START_METHANE"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"CHECK_METHANE"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"START_COMBUSTION"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"CHECK_COMBUSTION"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"WAIT_FOR_USER"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"START_EJECTOR"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"CHECK_EJECTOR"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"RUN_SEED"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"WAIT_FOR_EOT"</v>
+              <v n="TextID">"TEST_ERROR"</v>
               <v n="TextDefault">""</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
