@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MonitoredValueUpdate" Id="{368df2b5-062f-4a79-a0cb-61ce99315c9c}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MonitoredValueUpdate
+VAR
+	//Declare the array of monitored values
+	monitoredValues : ARRAY[0..16] OF MonitoredValue;
+	
+	//give a variable to reset the values
+	resetDefaults   : BOOL  := TRUE;
+	
+END_VAR
+
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF resetDefaults THEN
+	resetDefaults := FALSE;
+	//Pressure Transducers
+	monitoredValues[1].rawValueMin       := 0;
+	monitoredValues[1].rawValueMax       := 32767; 
+	monitoredValues[1].scaledValueMin    := 0;
+	monitoredValues[1].scaledValueMax    := 100;
+	monitoredValues[1].units             := 'psig';
+	monitoredValues[1].lowerWarningValue := 0;
+	monitoredValues[1].upperWarningValue := 80;
+	monitoredValues[1].dbName            := 'air inlet pressure';
+	
+	monitoredValues[2].rawValueMin       := 0;
+	monitoredValues[2].rawValueMax       := 32767; 
+	monitoredValues[2].scaledValueMin    := 0;
+	monitoredValues[2].scaledValueMax    := 100;
+	monitoredValues[2].units             := 'psig';
+	monitoredValues[2].lowerWarningValue := 0;
+	monitoredValues[2].upperWarningValue := 80;
+	monitoredValues[2].dbName            := 'methane inlet pressure';
+	
+	monitoredValues[3].rawValueMin       := 0;
+	monitoredValues[3].rawValueMax       := 32767; 
+	monitoredValues[3].scaledValueMin    := 0;
+	monitoredValues[3].scaledValueMax    := 30;
+	monitoredValues[3].units             := 'psia';
+	monitoredValues[3].lowerWarningValue := 0;
+	monitoredValues[3].upperWarningValue := 30;
+	monitoredValues[3].dbName            := 'ejector pressure';
+	
+	monitoredValues[4].rawValueMin       := 0;
+	monitoredValues[4].rawValueMax       := 32767; 
+	monitoredValues[4].scaledValueMin    := 0;
+	monitoredValues[4].scaledValueMax    := 1000;
+	monitoredValues[4].units             := 'psig';
+	monitoredValues[4].lowerWarningValue := 150;
+	monitoredValues[4].upperWarningValue := 300;
+	monitoredValues[4].dbName            := 'facility pressure';
+	
+	monitoredValues[5].rawValueMin       := 0;
+	monitoredValues[5].rawValueMax       := 32767; 
+	monitoredValues[5].scaledValueMin    := 0;
+	monitoredValues[5].scaledValueMax    := 15;
+	monitoredValues[5].units             := 'psig';
+	monitoredValues[5].lowerWarningValue := 0;
+	monitoredValues[5].upperWarningValue := 15;
+	monitoredValues[5].dbName            := 'fluidize pressure';	
+	
+	monitoredValues[6].rawValueMin       := 0;
+	monitoredValues[6].rawValueMax       := 32767; 
+	monitoredValues[6].scaledValueMin    := 0;
+	monitoredValues[6].scaledValueMax    := 15;
+	monitoredValues[6].units             := 'psig';
+	monitoredValues[6].lowerWarningValue := 0;
+	monitoredValues[6].upperWarningValue := 15;
+	monitoredValues[6].dbName            := 'extend pressure';	
+	
+	monitoredValues[7].rawValueMin       := 0;
+	monitoredValues[7].rawValueMax       := 32767; 
+	monitoredValues[7].scaledValueMin    := 0;
+	monitoredValues[7].scaledValueMax    := 300;
+	monitoredValues[7].units             := '';
+	monitoredValues[7].lowerWarningValue := 0;
+	monitoredValues[7].upperWarningValue := 100;
+	monitoredValues[7].dbName            := 'combustor pressure';	
+	
+	monitoredValues[8].rawValueMin       := 0;
+	monitoredValues[8].rawValueMax       := 32767; 
+	monitoredValues[8].scaledValueMin    := -50;
+	monitoredValues[8].scaledValueMax    := 50;
+	monitoredValues[8].units             := 'lbm';
+	monitoredValues[8].lowerWarningValue := -50;
+	monitoredValues[8].upperWarningValue := 50;
+	monitoredValues[8].dbName            := 'load cell';	
+
+	
+END_IF  
+
+monitoredValues[1].rawValue := gIO.AI_AirInletPressure;
+monitoredValues[1].scaledValue := ScaledValue(monitoredValues[1]);
+
+monitoredValues[2].rawValue := gIO.AI_MethaneInletPressure;
+monitoredValues[2].scaledValue := ScaledValue(monitoredValues[2]);
+
+monitoredValues[3].rawValue := gIO.AI_EjectorPressure;
+monitoredValues[3].scaledValue := ScaledValue(monitoredValues[3]);
+
+monitoredValues[4].rawValue := gIO.AI_FacilityPressure;
+monitoredValues[4].scaledValue := ScaledValue(monitoredValues[4]);
+
+monitoredValues[5].rawValue := gIO.AI_FluidizationPressure;
+monitoredValues[5].scaledValue := ScaledValue(monitoredValues[5]);
+
+monitoredValues[6].rawValue := gIO.AI_ExtendPressure;
+monitoredValues[6].scaledValue := ScaledValue(monitoredValues[6]);
+
+monitoredValues[7].rawValue := gIO.AI_CombustorPressure;
+monitoredValues[7].scaledValue := ScaledValue(monitoredValues[7]);
+
+monitoredValues[8].rawValue := gIO.AI_LoadCellWeight;
+monitoredValues[8].scaledValue := ScaledValue(monitoredValues[8]);
+
+gScaledInputs.monitoredValues := monitoredValues;
+]]></ST>
+    </Implementation>
+    <LineIds Name="MonitoredValueUpdate">
+      <LineId Id="138" Count="0" />
+      <LineId Id="171" Count="0" />
+      <LineId Id="143" Count="0" />
+      <LineId Id="145" Count="25" />
+      <LineId Id="193" Count="0" />
+      <LineId Id="195" Count="6" />
+      <LineId Id="194" Count="0" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="206" Count="7" />
+      <LineId Id="225" Count="0" />
+      <LineId Id="227" Count="6" />
+      <LineId Id="226" Count="0" />
+      <LineId Id="234" Count="0" />
+      <LineId Id="237" Count="6" />
+      <LineId Id="235" Count="0" />
+      <LineId Id="244" Count="0" />
+      <LineId Id="246" Count="6" />
+      <LineId Id="245" Count="0" />
+      <LineId Id="236" Count="0" />
+      <LineId Id="192" Count="0" />
+      <LineId Id="141" Count="0" />
+      <LineId Id="139" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="173" Count="1" />
+      <LineId Id="172" Count="0" />
+      <LineId Id="175" Count="1" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="179" Count="0" />
+      <LineId Id="178" Count="0" />
+      <LineId Id="177" Count="0" />
+      <LineId Id="264" Count="0" />
+      <LineId Id="267" Count="0" />
+      <LineId Id="265" Count="1" />
+      <LineId Id="268" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="271" Count="1" />
+      <LineId Id="270" Count="0" />
+      <LineId Id="274" Count="1" />
+      <LineId Id="273" Count="0" />
+      <LineId Id="269" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="85" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="HMI" Id="{8ff68e5f-22ed-40d6-906b-4c6ef65f5858}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	//HMI BUTTONS
+	bStartButtonState            : BOOL;
+	bStopButtonState             : BOOL;
+	bAirSolenoidButton           : BOOL;
+	bFuelSolenoidButton          : BOOL;
+	bWaterQuenchSolenoidButton   : BOOL;
+	bZVSSolenoidButton           : BOOL;
+	bFluidizationSolenoidButton  : BOOL;
+	bSeederExtendSolenoidButton  : BOOL;
+	bSeederRetractSolenoidButton : BOOL;
+	bQDCMethaneSolenoidButton    : BOOL;
+	bReset                        : BOOL;
+	
+	//HMI DATA FIELDS
+	iAirStartTime                : INT;
+	iAirStopTime                 : INT;
+	iFuelStartTime               : INT;
+	iFuelStopTime                : INT;
+	iWaterQuenchStartTime        : INT;
+	iWaterQuenchStopTime         : INT; 
+	iZVSStartTime                : INT;
+	iZVSStopTime                 : INT;
+	iFluidizationStartTime       : INT;
+	iFluidizationStopTime        : INT;
+	iSeederExtendStartTime       : INT;
+	iSeederExtendStopTime        : INT;
+	iSeederRetractStartTime      : INT;
+	iSeederRetractStopTime       : INT;
+	iQDCMethaneStartTime         : INT;
+	iQDCMethaneStopTime          : INT;
+	
+	//HMI User Feedback
+	iBlowdownTimeProgress        : INT;
+	bEStopPressed                : BOOL;
+	seedTime                     : STRING(16);
+	
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

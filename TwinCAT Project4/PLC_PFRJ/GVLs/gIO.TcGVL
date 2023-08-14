@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="gIO" Id="{8f0fea6c-ece1-46d8-93a6-9eab07231d5f}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	
+	//Digital Outputs
+	DO_ZVSIgnite             AT %Q* : BOOL;
+	DO_CombustorAirSolenoid  AT %Q* : BOOL;
+	DO_MethaneSolenoid       AT %Q* : BOOL;
+	DO_WaterQuenchSolenoid   AT %Q* : BOOL;  
+	DO_SeederExtendSolenoid  AT %Q* : BOOL;	
+	DO_SeederRetractSolenoid AT %Q* : BOOL;
+	DO_SeederFluidization    AT %Q* : BOOL;
+	DO_Reset                 AT %Q* : BOOL;
+	DO_CollectData           AT %Q* : BOOL;
+	DO_EjectorSolenoid       AT %Q* : BOOL;
+	
+	//Digital Inputs
+	DI_SeederExtendLimitSensor  AT %I* : BOOL;
+	DI_SeederRetractLimitSensor AT %I* : BOOL;
+	DI_MotorExtendLimitSensor   AT %I* : BOOL;
+	DI_MotorRetractLimitSensor  AT %I* : BOOL;  
+	DI_24VAtSolenoids           AT %I* : BOOL;
+	DI_ESTOP_L1                 AT %I* : BOOL;
+	DI_ESTOP_L2                 AT %I* : BOOL;
+	
+	//AnalogInputs
+	AI_CombustorPressure        AT %I* : INT;
+	AI_AirInletPressure         AT %I* : INT;
+	AI_MethaneInletPressure     AT %I* : INT;
+	AI_FacilityPressure         AT %I* : INT;
+	AI_CombustorLightIntensity  AT %I* : INT;
+	AI_FluidizationPressure     AT %I* : INT;
+	AI_EjectorPressure          AT %I* : INT;
+	AI_LoadCellWeight           AT %I* : INT;
+	AI_ExtendPressure           AT %I* : INT;
+	TC_CombustorTemperature     AT %I* : INT;
+	
+	
+	//Analog Outputs
+	AO_FluidizationValvePos     AT %Q* : INT;
+	
+	
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

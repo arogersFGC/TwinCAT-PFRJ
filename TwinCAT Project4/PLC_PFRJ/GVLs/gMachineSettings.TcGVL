@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="gMachineSettings" Id="{325842d0-75b8-4157-8edf-fc05f9d55d17}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+VAR_GLOBAL
+	
+	//Logic Thresholds
+	//Air Thresholds
+	minAirPressure          : REAL := 30;
+	maxAirPressureDelay     : TIME := T#2S;
+	minAirSettlingTime      : TIME := T#0.5S;
+	minFacilityPressure     : REAL := 150;
+	
+	//Methane Thresholds
+	minMethanePressure      : REAL := 20;
+	maxMethanePressureDelay : TIME := T#1S;
+	minMethaneSettlingTime  : TIME := T#0.25S;
+	
+	minCombustorPressure    : REAL;
+	minCombustorTemp        : REAL;
+	
+	maxZVSIgnitionAttempts  : INT  := 5;
+	maxSeedTime             : TIME := T#7S;
+	
+	pistonDelayTime         : TIME := T#0.25S;
+	powderIgnitionTime      : TIME := T#2S; 
+	
+	
+	//Communications
+	temperatureThreshold  : REAL;
+	IoLinkAmsId           : ARRAY[0..5] OF BYTE := [5,131,46,11,3,14];
+	IoLinkPort            : UINT := E_IolPort.Port1;	
+	
+	//testVariables
+	motorSeederActive     : BOOL;
+	pistonSeederActive    : BOOL;
+	
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

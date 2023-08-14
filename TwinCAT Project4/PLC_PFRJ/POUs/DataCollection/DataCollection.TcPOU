@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="DataCollection" Id="{458c43e2-876c-4396-a1fc-b01f28c0f90c}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM DataCollection
+VAR CONSTANT
+	MAX_CSV_ROWS          : INT := 2000;
+	MAX_CSV_COLUMNS       : INT := 20;
+	MAX_CSV_FIELD_LENGTH  : UDINT     := 100;
+	DEFAULT_CSV_FIELD_SEP : BYTE := 16#2C;(* Comma ASCII code *)
+END_VAR
+VAR
+	dataOutput : ARRAY[0..2000,0..16] OF REAL;
+	scaledAirInletPressure     : REAL;
+	scaledMethaneInletPressure : REAL; 
+	command_CollectData: BOOL;
+	currentDataPoint: INT;
+	
+	
+	//File writing variables 
+	bWrite          : BOOL        := FALSE;
+	sNetId			: T_AmsNetId  := '5.131.46.11.1.1';	(* TwinCAT system network address *)
+	sFileName		: T_MaxString := 'C:\Temp\Data.csv';(* CSV destination file path and name *)
+	sCSVLine		: T_MaxString := '';(* Single CSV text line (row, record), we are using string as record buffer (your are able to see created fields) *)
+	sCSVField		: T_MaxString := '';(* Single CSV field value (column, record field) *)
+	bBusy			: BOOL;
+	bError			: BOOL;
+	nErrId			: UDINT;
+	nRow	 		: UDINT 	:= 0;(* Row number (record) *)
+	nColumn			: UDINT 	:= 0;(* Column number (record field) *)
+	hFile			: UINT		:= 0;(* File handle of the source file *)
+	step			: DWORD 	:= 0;
+	fbFileOpen		: FB_FileOpen;(* Opens file *)
+	fbFileClose		: FB_FileClose;(* Closes file *)
+	fbFilePuts		: FB_FilePuts;(* Writes one record (line) *)
+	fbWriter		: FB_CSVMemBufferWriter;(* Helper function block used to create CSV data bytes (single record line) *)
+	
+END_VAR
+
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <LineIds Name="DataCollection">
+      <LineId Id="26" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

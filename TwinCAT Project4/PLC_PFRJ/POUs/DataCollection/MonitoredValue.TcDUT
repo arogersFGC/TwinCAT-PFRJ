@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="MonitoredValue" Id="{566712ed-280a-4222-a0fc-b368ed44a062}">
+    <Declaration><![CDATA[TYPE MonitoredValue :
+STRUCT
+	rawValue          : INT;
+	rawValueMin       : INT;
+	rawValueMax       : INT;
+	scaledValue       : REAL;
+	scaledValueMin    : REAL;
+	scaledValueMax    : REAL;
+	units             : STRING(10);
+	lowerWarningValue : REAL;
+	upperWarningValue : REAL; 
+	dbName            : STRING(50);
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

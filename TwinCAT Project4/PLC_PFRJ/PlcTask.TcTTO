@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <Task Name="PlcTask" Id="{a3a22bff-6557-4d49-80e9-64bc3b7a16d4}">
+    <!--CycleTime in micro seconds.-->
+    <CycleTime>10000</CycleTime>
+    <Priority>20</Priority>
+    <PouCall>
+      <Name>MAIN</Name>
+    </PouCall>
+    <PouCall>
+      <Name>MonitoredValueUpdate</Name>
+    </PouCall>
+    <TaskFBGuid>{7e6da4a1-f960-43c7-a0e4-eac4cdcdf5d0}</TaskFBGuid>
+    <Fb_init>{e5e0dbb9-396f-4997-8d97-c712b21e7ca6}</Fb_init>
+    <Fb_exit>{9858fd46-49ca-4529-b9e8-798671547af5}</Fb_exit>
+    <CycleUpdate>{629cc8fc-4c06-48d3-8d12-f43cbb0c6b90}</CycleUpdate>
+    <PostCycleUpdate>{b411b1e0-f411-4aee-9b44-7d5243f6ae35}</PostCycleUpdate>
+  </Task>
+</TcPlcObject>

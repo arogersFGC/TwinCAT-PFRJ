@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.47">
+	<Project ProjectGUID="{C0402775-AC2F-4D44-9AAF-EE954AEBFD88}" Target64Bit="true" ShowHideConfigurations="#x106">
+		<System>
+			<Tasks>
+				<Task Id="3" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
+					<Name>PlcTask</Name>
+				</Task>
+				<Task Id="4" Priority="1" CycleTime="100000" AmsPort="351" AdtTasks="true">
+					<Name>DataCollectionTask</Name>
+				</Task>
+			</Tasks>
+		</System>
+		<Plc>
+			<Project GUID="{6FFCAF1E-E600-434E-A02B-C852832A7F33}" Name="PLC_PFRJ" PrjFilePath="PLC_PFRJ\PLC_PFRJ.plcproj" TmcFilePath="PLC_PFRJ\PLC_PFRJ.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC_PFRJ\PLC_PFRJ.tmc" TmcHash="{8C5041A4-1DB8-9334-E991-398EF3E2C7D8}">
+					<Name>PLC_PFRJ Instance</Name>
+					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
+						<Name>PlcTask Inputs</Name>
+						<Var>
+							<Name>gIO.DI_SeederExtendLimitSensor</Name>
+							<Comment><![CDATA[Digital Inputs]]></Comment>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DI_SeederRetractLimitSensor</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DI_MotorExtendLimitSensor</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DI_MotorRetractLimitSensor</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DI_24VAtSolenoids</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DI_ESTOP_L1</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DI_ESTOP_L2</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.AI_CombustorPressure</Name>
+							<Comment><![CDATA[AnalogInputs]]></Comment>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.AI_AirInletPressure</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.AI_MethaneInletPressure</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.AI_FacilityPressure</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.AI_CombustorLightIntensity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.AI_FluidizationPressure</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.AI_EjectorPressure</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.AI_LoadCellWeight</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.AI_ExtendPressure</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.TC_CombustorTemperature</Name>
+							<Type>INT</Type>
+						</Var>
+					</Vars>
+					<Vars VarGrpType="2" ContextId="1" AreaNo="17">
+						<Name>PlcTask Outputs</Name>
+						<Var>
+							<Name>gIO.DO_ZVSIgnite</Name>
+							<Comment><![CDATA[Digital Outputs]]></Comment>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DO_CombustorAirSolenoid</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DO_MethaneSolenoid</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DO_WaterQuenchSolenoid</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DO_SeederExtendSolenoid</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DO_SeederRetractSolenoid</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DO_SeederFluidization</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DO_Reset</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DO_CollectData</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.DO_EjectorSolenoid</Name>
+							<Type>BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.AO_FluidizationValvePos</Name>
+							<Comment><![CDATA[Analog Outputs]]></Comment>
+							<Type>INT</Type>
+						</Var>
+					</Vars>
+					<Contexts>
+						<Context>
+							<Id>0</Id>
+							<Name>DataCollectionTask</Name>
+							<ManualConfig>
+								<OTCID>#x02010040</OTCID>
+							</ManualConfig>
+							<Priority>1</Priority>
+							<CycleTime>10000000</CycleTime>
+						</Context>
+						<Context>
+							<Id>1</Id>
+							<Name>PlcTask</Name>
+							<ManualConfig>
+								<OTCID>#x02010030</OTCID>
+							</ManualConfig>
+							<Priority>20</Priority>
+							<CycleTime>10000000</CycleTime>
+						</Context>
+					</Contexts>
+					<TaskPouOids>
+						<TaskPouOid Prio="1" OTCID="#x08502042"/>
+						<TaskPouOid Prio="20" OTCID="#x08502041"/>
+					</TaskPouOids>
+				</Instance>
+			</Project>
+		</Plc>
+	</Project>
+</TcSmProject>
