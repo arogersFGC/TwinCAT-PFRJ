@@ -7,9 +7,6 @@
     <PouCall>
       <Name>MAIN</Name>
     </PouCall>
-    <PouCall>
-      <Name>MonitoredValueUpdate</Name>
-    </PouCall>
     <TaskFBGuid>{7e6da4a1-f960-43c7-a0e4-eac4cdcdf5d0}</TaskFBGuid>
     <Fb_init>{e5e0dbb9-396f-4997-8d97-c712b21e7ca6}</Fb_init>
     <Fb_exit>{9858fd46-49ca-4529-b9e8-798671547af5}</Fb_exit>

@@ -3,10 +3,10 @@
   <DUT Name="TestParameters" Id="{af94bc1b-3b66-4be4-a68c-f8c27348763a}">
     <Declaration><![CDATA[TYPE TestParameters :
 STRUCT
-	ZVSIgniteOnTime					: TIME := T#0S;
-	ZVSIgniteOffTime				: TIME := T#0S;
+	ZVSIgniteOnTime					: TIME := T#10S;
+	ZVSIgniteOffTime				: TIME := T#12S;
 	CombustorAirSolenoidOnTime		: TIME := T#0S;       
-	CombustorAirSolenoidOffTime		: TIME := T#0S;
+	CombustorAirSolenoidOffTime		: TIME := T#25S;
 	MethaneSolenoidOnTime			: TIME := T#0S;
 	MethaneSolenoidOffTime			: TIME := T#0S; 
 	WaterQuenchSolenoidOnTime 		: TIME := T#0S;
@@ -17,6 +17,9 @@ STRUCT
 	SeederRetractSolenoidOffTime	: TIME := T#0S;
 	FluidizationSolenoidOnTime		: TIME := T#0S;
 	FluidizationSolenoidOffTime		: TIME := T#0S;
+	EjectorSolenoidOnTime           : TIME := T#0S;
+	EjectorSolenoidOffTime          : TIME := T#0S;
+	
 END_STRUCT
 END_TYPE
 ]]></Declaration>

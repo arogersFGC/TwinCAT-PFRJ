@@ -52,13 +52,15 @@
     </Compile>
     <Compile Include="POUs\DataCollection\MonitoredValueUpdate.TcPOU">
       <SubType>Code</SubType>
-      <LinkAlways>true</LinkAlways>
     </Compile>
     <Compile Include="POUs\DataCollection\ScaledValue.TcPOU">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
-    <Compile Include="POUs\MAIN_STATE.TcTLEO">
+    <Compile Include="POUs\HMI\HMI_FB.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\MAIN_ST.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MAIN.TcPOU">
@@ -94,6 +96,7 @@
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
     <Folder Include="POUs\DataCollection" />
+    <Folder Include="POUs\HMI" />
     <Folder Include="POUs\UtilityFunctions" />
     <Folder Include="POUs\TestCell" />
     <Folder Include="VISUs" />

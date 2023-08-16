@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="MAIN_ST" Id="{7a990315-7af0-4749-acc7-dd9a2e2db61a}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE MAIN_ST :
+(
+	STARTUP,
+	IDLE,
+	ESTOP,
+	WAIT_FOR_RESET,
+	RESETTING
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="HMI_FB" Id="{78f424a5-0a06-4e7f-b74a-d911ba7ff90d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK HMI_FB
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//HMI DATA FIELDS
+gMachineSettings.testParameters.CombustorAirSolenoidOnTime		:= INT_TO_TIME(gHMI.iAirStartTime);        
+gMachineSettings.testParameters.CombustorAirSolenoidOffTime 	:= INT_TO_TIME(gHMI.iAirStopTime);               
+gMachineSettings.testParameters.FluidizationSolenoidOnTime		:= INT_TO_TIME(gHMI.iFuelStartTime);             
+gMachineSettings.testParameters.FluidizationSolenoidOffTime		:= INT_TO_TIME(gHMI.iFuelStopTime);              
+gMachineSettings.testParameters.WaterQuenchSolenoidOnTime		:= INT_TO_TIME(gHMI.iWaterQuenchStartTime);      
+gMachineSettings.testParameters.WaterQuenchSolenoidOffTime		:= INT_TO_TIME(gHMI.iWaterQuenchStopTime);    
+gMachineSettings.testParameters.ZVSIgniteOnTime					:= INT_TO_TIME(gHMI.iZVSStartTime);          
+gMachineSettings.testParameters.ZVSIgniteOffTime				:= INT_TO_TIME(gHMI.iZVSStopTime);               
+gMachineSettings.testParameters.FluidizationSolenoidOnTime		:= INT_TO_TIME(gHMI.iFluidizationStartTime);  
+gMachineSettings.testParameters.FluidizationSolenoidOffTime		:= INT_TO_TIME(gHMI.iFluidizationStopTime);      
+gMachineSettings.testParameters.SeederExtendSolenoidOnTime		:= INT_TO_TIME(gHMI.iSeederExtendStartTime);     
+gMachineSettings.testParameters.SeederExtendSolenoidOffTime		:= INT_TO_TIME(gHMI.iSeederExtendStopTime);        
+gMachineSettings.testParameters.SeederRetractSolenoidOnTime		:= INT_TO_TIME(gHMI.iSeederRetractStartTime);    
+gMachineSettings.testParameters.SeederRetractSolenoidOffTime	:= INT_TO_TIME(gHMI.iSeederRetractStopTime);        ]]></ST>
+    </Implementation>
+    <LineIds Name="HMI_FB">
+      <LineId Id="10" Count="14" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

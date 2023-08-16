@@ -3,255 +3,58 @@
   <POU Name="MAIN" Id="{95f0d3d7-ef12-463a-a495-742fe761b35c}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	
-	
-	
-	//IO Link parameters
-    nAdsError               : E_AdsErr := E_AdsErr.NOERR;
-    nIolError               : E_IolError := E_IolError.NoError;
-    sErrorTxt               : STRING(255) := '';
-    bError                  : BOOL := FALSE;
-    hr                      : HRESULT;
-	
+	testFB : TestFB;
+	monitoredValueUpdate : MonitoredValueUpdate;
+	main_state : MAIN_ST := MAIN_ST.STARTUP;
+	hmi_FB   : HMI_FB;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF NOT gIO.DI_ESTOP_L2 THEN
-	state := MAIN_STATE.ESTOP;
+      <ST><![CDATA[//Always run the function blocks
+testFB();
+monitoredValueUpdate();
+hmi_FB();
+
+IF NOT gIO.DI_ESTOP_L2 THEN
+	main_state := MAIN_ST.ESTOP;
 END_IF
 
-CASE state OF
-	MAIN_STATE.STARTUP:
-		IF startup THEN
-			startup := FALSE;
-			fbIolSlave.MasterAoeNetId := F_CreateAmsNetId(gMachineSettings.IoLinkAmsId);
-    		fbIolSlave.Port :=  gMachineSettings.IoLinkPort;
-			TSIG_ZVSIgnite(Init:=FALSE, pIO:=ADR(gIO.DO_ZVSIgnite), Start_Time:=INT_TO_TIME(gHMI.iZVSStartTime), End_Time:=INT_TO_TIME(gHMI.iZVSStopTime));
-			TSIG_CombustorAirSolenoid(Init:=FALSE, pIO:=ADR(gIO.DO_CombustorAirSolenoid), Start_Time:=INT_TO_TIME(gHMI.iAirStartTime), End_Time:=INT_TO_TIME(gHMI.iAirStopTime));
-			state := MAIN_STATE.IDLE;	
-		END_IF
-		
-	MAIN_STATE.IDLE:
-		//Make sure all timers are reset from the idle state
-		IF command_StartTest THEN
-			command_StartTest := FALSE;
-			state := MAIN_STATE.CHECK_TEST_READY;
-		END_IF
-		
-	MAIN_STATE.CHECK_TEST_READY:
-		state := MAIN_STATE.SET_TEST_VARIABLES;
-		
-	MAIN_STATE.SET_TEST_VARIABLES:
-		state := MAIN_STATE.START_TEST;
-	MAIN_STATE.START_TEST:
-		gIO.DO_CollectData := TRUE;
-		gIO.DO_WaterQuenchSolenoid := TRUE;
-	
-	MAIN_STATE.RUN_TEST:
-		TSIG_ZVSIgnite(Init:=TRUE, );
-		TSIG_CombustorAirSolenoid(Init:=TRUE);
-		TSIG_MethaneSolenoid();
-		TSIG_WaterQuenchSolenoid();
-		TSIG_SeederExtendSolenoid();
-		TSIG_SeederRetractSolenoid();
-		TSIG_FluidizationSolenoid();
-	
-	MAIN_STATE.TEST_COMPLETE:
-		//reset timers
-		fbTON_TestTimer(IN:=FALSE);
-		fbTON_AirAtPressure(IN:=FALSE);         
-		fbTon_ZVSTimer(IN:=FALSE);               
-		fbTon_MethaneTimer(IN:=FALSE);        
-		fbTon_SeedTime(IN:=FALSE);   
-		fbTon_PowderIgnitionDelay(IN:=FALSE);    
-		
-		//Reset IO
-		gIO.DO_CollectData := FALSE;
-		gIO.DO_CombustorAirSolenoid := FALSE;
-		gIO.DO_MethaneSolenoid := FALSE;
-		gIO.DO_SeederExtendSolenoid := FALSE;
-		gIO.DO_SeederFluidization := FALSE;
-		gIO.DO_WaterQuenchSolenoid := FALSE;
-		gIO.DO_ZVSIgnite := FALSE;
-		gIO.DO_EjectorSolenoid := FALSE;
-		state := MAIN_STATE.BLOWDOWN;
-		
-	MAIN_STATE.STOP:
-		//reset timers
-		fbTON_TestTimer(IN:=FALSE);
-		fbTON_AirAtPressure(IN:=FALSE);         
-		fbTon_ZVSTimer(IN:=FALSE);               
-		fbTon_MethaneTimer(IN:=FALSE);        
-		fbTon_SeedTime(IN:=FALSE);
-		fbTon_PowderIgnitionDelay(IN:=FALSE);         
-		
-		//turn off solenoids immediately 
-		TSIG_ZVSIgnite(Init:=FALSE);
-		TSIG_CombustorAirSolenoid(Init:=FALSE);
-		gIO.DO_CollectData := FALSE;
-		gIO.DO_CombustorAirSolenoid := FALSE;
-		gIO.DO_MethaneSolenoid := FALSE;
-		gIO.DO_SeederExtendSolenoid := FALSE;
-		gIO.DO_SeederFluidization := FALSE;
-		gIO.DO_WaterQuenchSolenoid := FALSE;
-		gIO.DO_ZVSIgnite := FALSE;
-		gIO.DO_EjectorSolenoid := FALSE;
-		state := MAIN_STATE.BLOWDOWN;
-		//run purge air 
-	MAIN_STATE.BLOWDOWN:
-		TSIG_CombustorAirSolenoid(Init:=TRUE, Start_Time := INT_TO_TIME(0), End_Time := INT_TO_TIME(5000));
-		gHMI.iBlowdownTimeProgress := REAL_TO_INT(TIME_TO_INT(TSIG_CombustorAirSolenoid.ET - TSIG_CombustorAirSolenoid.Start_Time) * (100) / TIME_TO_INT(TSIG_CombustorAirSolenoid.End_Time - TSIG_CombustorAirSolenoid.Start_Time));
-		IF NOT TSIG_CombustorAirSolenoid.Q THEN
-			state := MAIN_STATE.BLOWDOWN_COMPLETE;
-		END_IF
-	MAIN_STATE.BLOWDOWN_COMPLETE:
-		TSIG_CombustorAirSolenoid(Init:=FALSE);
-		gHMI.iBlowdownTimeProgress := 0;
-		state := MAIN_STATE.IDLE;
-		
-	MAIN_STATE.ESTOP: 
-		//reset timers
-		fbTON_TestTimer(IN:=FALSE);
-		fbTON_AirAtPressure(IN:=FALSE);         
-		fbTon_ZVSTimer(IN:=FALSE);               
-		fbTon_MethaneTimer(IN:=FALSE);        
-		fbTon_SeedTime(IN:=FALSE);  
-		TSIG_CombustorAirSolenoid(Init:=FALSE);
-		TSIG_ZVSIgnite(Init:=FALSE);
-		fbTon_PowderIgnitionDelay(IN:=FALSE); 
-		
-		//reset IO
-		gIO.DO_CombustorAirSolenoid := FALSE;
-		gIO.DO_MethaneSolenoid := FALSE;
-		gIO.DO_SeederExtendSolenoid := FALSE;
-		gIO.DO_SeederFluidization := FALSE;
-		gIO.DO_WaterQuenchSolenoid := FALSE;
-		gIO.DO_ZVSIgnite := FALSE;
-		gIO.DO_EjectorSolenoid := FALSE;
+CASE MAIN_STATE OF 
+	MAIN_ST.STARTUP: 
+		testFB(command_StartTest:=FALSE, command_StopTest:=FALSE,command_Reset:=FALSE);
+		monitoredValueUpdate(resetDefaults:=TRUE);
+		main_state := MAIN_ST.IDLE;
+	MAIN_ST.IDLE:
+		//do nothing
+	MAIN_ST.ESTOP:
+		gMachine.testCell.state := TEST_STATE.ESTOP;
 		IF gIO.DI_ESTOP_L2 THEN
-			state := MAIN_STATE.WAIT_FOR_RESET;
+			gMachine.testCell.state := TEST_STATE.WAIT_FOR_RESET;
 		END_IF
-			
-	MAIN_STATE.WAIT_FOR_RESET:
-		IF command_Reset THEN
-			command_Reset := FALSE;
-			bError        := FALSE;
-			gIO.DO_Reset  := TRUE;
-			state         := MAIN_STATE.RESETTING;
+	MAIN_ST.WAIT_FOR_RESET:
+		IF gHMI.bReset THEN
+			testFB(command_Reset:=TRUE);
+			main_state := MAIN_ST.RESETTING;
 		END_IF
-		
-	MAIN_STATE.RESETTING: 
+	MAIN_ST.RESETTING:
 		IF gIO.DI_24VAtSolenoids THEN
-			gIO.DO_Reset := FALSE;
-			state := MAIN_STATE.IDLE;
-		END_IF
-		
-		
+			main_state := MAIN_ST.IDLE;
+		END_IF	
 END_CASE
 
-
-//Safety watchdog
-IF gScaledIO.monitoredValues[4].scaledValue < gMachineSettings.minFacilityPressure AND gIO.DO_EjectorSolenoid THEN
-	state := MAIN_STATE.STOP;
-END_IF
-
 gHMI.bEStopPressed := NOT gIO.DI_24VAtSolenoids;
-gHMI.seedTime      := TIME_TO_STRING(fbTon_SeedTime.ET);
-IF command_StopTest THEN
-	command_StopTest := FALSE;
-	state := MAIN_STATE.STOP;
-END_IF
+
 
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="1406" Count="1" />
-      <LineId Id="1404" Count="1" />
-      <LineId Id="551" Count="0" />
-      <LineId Id="928" Count="0" />
-      <LineId Id="930" Count="1" />
-      <LineId Id="1049" Count="1" />
-      <LineId Id="936" Count="1" />
-      <LineId Id="1332" Count="0" />
-      <LineId Id="932" Count="0" />
-      <LineId Id="929" Count="0" />
-      <LineId Id="552" Count="2" />
-      <LineId Id="742" Count="0" />
-      <LineId Id="556" Count="3" />
-      <LineId Id="566" Count="1" />
-      <LineId Id="569" Count="1" />
-      <LineId Id="572" Count="0" />
-      <LineId Id="1186" Count="0" />
-      <LineId Id="1261" Count="0" />
-      <LineId Id="1328" Count="0" />
-      <LineId Id="1030" Count="0" />
-      <LineId Id="1466" Count="5" />
-      <LineId Id="1080" Count="0" />
-      <LineId Id="1085" Count="0" />
-      <LineId Id="591" Count="1" />
-      <LineId Id="1193" Count="3" />
-      <LineId Id="1187" Count="0" />
-      <LineId Id="1320" Count="0" />
-      <LineId Id="1191" Count="1" />
-      <LineId Id="1189" Count="0" />
-      <LineId Id="1095" Count="5" />
-      <LineId Id="1324" Count="0" />
-      <LineId Id="600" Count="0" />
-      <LineId Id="1188" Count="0" />
-      <LineId Id="601" Count="0" />
-      <LineId Id="1200" Count="4" />
-      <LineId Id="1199" Count="0" />
-      <LineId Id="1321" Count="0" />
-      <LineId Id="1205" Count="0" />
-      <LineId Id="602" Count="1" />
-      <LineId Id="608" Count="0" />
-      <LineId Id="1190" Count="0" />
-      <LineId Id="1103" Count="4" />
-      <LineId Id="1102" Count="0" />
-      <LineId Id="1323" Count="0" />
-      <LineId Id="746" Count="0" />
-      <LineId Id="673" Count="0" />
-      <LineId Id="752" Count="1" />
-      <LineId Id="780" Count="0" />
-      <LineId Id="783" Count="1" />
-      <LineId Id="779" Count="0" />
-      <LineId Id="751" Count="0" />
-      <LineId Id="865" Count="0" />
-      <LineId Id="778" Count="0" />
-      <LineId Id="766" Count="0" />
-      <LineId Id="816" Count="0" />
-      <LineId Id="1168" Count="0" />
-      <LineId Id="1206" Count="0" />
-      <LineId Id="1209" Count="3" />
-      <LineId Id="1207" Count="0" />
-      <LineId Id="1170" Count="1" />
-      <LineId Id="1322" Count="0" />
-      <LineId Id="1214" Count="1" />
-      <LineId Id="1109" Count="4" />
-      <LineId Id="1108" Count="0" />
-      <LineId Id="1325" Count="0" />
-      <LineId Id="909" Count="1" />
-      <LineId Id="820" Count="0" />
-      <LineId Id="882" Count="0" />
-      <LineId Id="901" Count="0" />
-      <LineId Id="904" Count="1" />
-      <LineId Id="1116" Count="0" />
-      <LineId Id="906" Count="2" />
-      <LineId Id="1216" Count="0" />
-      <LineId Id="883" Count="0" />
-      <LineId Id="911" Count="1" />
-      <LineId Id="914" Count="0" />
-      <LineId Id="913" Count="0" />
-      <LineId Id="884" Count="0" />
-      <LineId Id="765" Count="0" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="1181" Count="1" />
-      <LineId Id="1178" Count="0" />
-      <LineId Id="1177" Count="0" />
-      <LineId Id="1179" Count="1" />
-      <LineId Id="918" Count="1" />
-      <LineId Id="1413" Count="0" />
-      <LineId Id="920" Count="4" />
+      <LineId Id="1513" Count="2" />
+      <LineId Id="1549" Count="0" />
+      <LineId Id="1516" Count="3" />
+      <LineId Id="1521" Count="4" />
+      <LineId Id="1548" Count="0" />
+      <LineId Id="1526" Count="4" />
+      <LineId Id="1532" Count="15" />
       <LineId Id="712" Count="0" />
     </LineIds>
   </POU>
