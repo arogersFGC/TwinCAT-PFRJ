@@ -40,7 +40,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{6FFCAF1E-E600-434E-A02B-C852832A7F33}" Name="PLC_PFRJ" PrjFilePath="PLC_PFRJ\PLC_PFRJ.plcproj" TmcFilePath="PLC_PFRJ\PLC_PFRJ.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC_PFRJ\PLC_PFRJ.tmc" TmcHash="{AEA28B2C-7116-BAD8-A72E-4220C34EB46B}">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC_PFRJ\PLC_PFRJ.tmc" TmcHash="{2AD5AE50-3089-A182-A312-2A045623D979}">
 					<Name>PLC_PFRJ Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
