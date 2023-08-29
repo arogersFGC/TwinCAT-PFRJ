@@ -2135,7 +2135,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"MAIN.testFB.command_Reset"</v>
+                      <v n="Value">"MAIN.testFB.command_StartTest"</v>
                     </o>
                     <o>
                       <v n="Id">2597686782L</v>
@@ -2957,7 +2957,7 @@
                     </o>
                     <o>
                       <v n="Id">743958181L</v>
-                      <v n="Value">"MAIN.testFB.command_StopTest"</v>
+                      <v n="Value">"gHMI.bReset"</v>
                     </o>
                   </l>
                 </o>
@@ -4615,7 +4615,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_157"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -4626,7 +4626,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -4795,7 +4795,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_159"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -4806,7 +4806,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -4975,7 +4975,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_161"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -4986,7 +4986,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -5155,7 +5155,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_163"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -5166,7 +5166,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -5335,7 +5335,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_165"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -5346,7 +5346,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -5515,7 +5515,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_167"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -5526,7 +5526,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -5695,7 +5695,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_169"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -5706,7 +5706,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -5875,7 +5875,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_171"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -5886,7 +5886,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -6055,7 +6055,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_173"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -6066,7 +6066,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -6235,7 +6235,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_175"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -6246,7 +6246,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -6415,7 +6415,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_177"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -6426,7 +6426,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -6595,7 +6595,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_179"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -6606,7 +6606,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -6775,7 +6775,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_181"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -6786,7 +6786,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -6955,7 +6955,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_183"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -6966,7 +6966,7 @@
                       <v n="InputBoxDialogTitle">""</v>
                       <v n="Password">false</v>
                       <v n="UseTextOutputVariable">true</v>
-                      <v n="TextOutputVariableInitialized">false</v>
+                      <v n="TextOutputVariableInitialized">true</v>
                       <v n="OtherVarConversion">""</v>
                       <v n="Format">""</v>
                       <v n="DialogPosition" t="DialogPositionSetting">UseGlobalSetting</v>
@@ -7135,7 +7135,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_185"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -7315,7 +7315,7 @@
                 <v n="VisualElementIdentifier">"GenElemInst_187"</v>
                 <n n="VisualElementOfflinePaintCommands" />
                 <n n="VisualElementFrameInformation" />
-                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="IInputAction[]">
+                <d n="VisualElementInputActions" t="Hashtable" ckt="String" cvt="InputBoxInputAction[]">
                   <v>OnMouseDown</v>
                   <a cet="InputBoxInputAction">
                     <o>
@@ -7559,8 +7559,8 @@
         <Type n="Guid">System.Guid</Type>
         <Type n="Hashtable">System.Collections.Hashtable</Type>
         <Type n="HotkeyConfiguration">{6b108d46-58af-4e41-a3f4-174d8f160cc4}</Type>
-        <Type n="IInputAction[]">_3S.CoDeSys.VisualElem.IInputAction[], VisualElem, Version=3.5.13.0, Culture=neutral, PublicKeyToken=null</Type>
         <Type n="InputBoxInputAction">{e8e7e747-f76f-4dee-ab1c-b9637e41ac26}</Type>
+        <Type n="InputBoxInputAction[]">_3S.CoDeSys.VisualElem.InputBoxInputAction[], VisualElem.plugin, Version=3.5.13.32, Culture=neutral, PublicKeyToken=null</Type>
         <Type n="Int16">System.Int16</Type>
         <Type n="Int32">System.Int32</Type>
         <Type n="Int64">System.Int64</Type>

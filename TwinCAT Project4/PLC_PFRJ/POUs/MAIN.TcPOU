@@ -30,6 +30,8 @@ CASE MAIN_STATE OF
 		gMachine.testCell.state := TEST_STATE.ESTOP;
 		IF gIO.DI_ESTOP_L2 THEN
 			gMachine.testCell.state := TEST_STATE.WAIT_FOR_RESET;
+			main_state := MAIN_ST.WAIT_FOR_RESET;
+			
 		END_IF
 	MAIN_ST.WAIT_FOR_RESET:
 		IF gHMI.bReset THEN
@@ -37,7 +39,7 @@ CASE MAIN_STATE OF
 			main_state := MAIN_ST.RESETTING;
 		END_IF
 	MAIN_ST.RESETTING:
-		IF gIO.DI_24VAtSolenoids THEN
+		IF gMachine.testCell.state = TEST_STATE.IDLE THEN
 			main_state := MAIN_ST.IDLE;
 		END_IF	
 END_CASE
@@ -54,7 +56,14 @@ gHMI.bEStopPressed := NOT gIO.DI_24VAtSolenoids;
       <LineId Id="1521" Count="4" />
       <LineId Id="1548" Count="0" />
       <LineId Id="1526" Count="4" />
-      <LineId Id="1532" Count="15" />
+      <LineId Id="1563" Count="0" />
+      <LineId Id="1559" Count="0" />
+      <LineId Id="1562" Count="0" />
+      <LineId Id="1533" Count="6" />
+      <LineId Id="1542" Count="0" />
+      <LineId Id="1561" Count="0" />
+      <LineId Id="1560" Count="0" />
+      <LineId Id="1543" Count="4" />
       <LineId Id="712" Count="0" />
     </LineIds>
   </POU>

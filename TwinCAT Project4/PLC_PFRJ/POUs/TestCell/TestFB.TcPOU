@@ -7,11 +7,19 @@ VAR_INPUT
 	command_StartTest : BOOL;
 	command_StopTest  : BOOL;
 	command_Reset     : BOOL;
+	command_StartSeed : BOOL;
 END_VAR
 VAR_OUTPUT
+	errorDiagMsg		: STRING(255);
 END_VAR
 VAR
 	bStartup          : BOOL  := TRUE;
+	methaneStartUpDelay		: TON;
+	methaneSettingTime		: TON;
+	ignitionTimer       	: TON;
+	ignitionDelay 			: TON;
+	ignitionCheckTimer		: TON;
+	testTimer				: TON;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -44,36 +52,90 @@ END_VAR
 		gMachine.testCell.state := TEST_STATE.START_TEST;
 	TEST_STATE.START_TEST:
 		gIO.DO_CollectData := TRUE;
-		gIO.DO_WaterQuenchSolenoid := TRUE;
+		gIO.DO_CombustorAirSolenoid := TRUE;
+		methaneStartUpDelay(IN:=TRUE, PT:=T#1S);
+		IF methaneStartUpDelay.Q AND gScaledIO.monitoredValues[1].scaledValue > gMachineSettings.safetyParameters.minAirPressure THEN
+			methaneStartUpDelay(IN:=FALSE);
+			gIO.DO_MethaneSolenoid := TRUE;
+			gMachine.testCell.state := TEST_STATE.START_IGNITION;
+		ELSE
+			errorDiagMsg := 'Methane flow attempted without air';
+			gMachine.testCell.state := TEST_STATE.ERROR;
+		END_IF
+	
+	TEST_STATE.START_IGNITION:
+		ignitionDelay(IN:=TRUE, PT:=T#1S);
+		IF ignitionDelay.Q AND gScaledIO.monitoredValues[2].scaledValue > gMachineSettings.safetyParameters.minMethanePressure THEN 
+			gIO.DO_ZVSIgnite := TRUE;
+			ignitionTimer(IN:=TRUE, PT:=T#1S);
+			IF ignitionTimer.Q THEN
+				gIO.DO_ZVSIgnite := FALSE;
+				ignitionDelay(IN:=FALSE);
+				ignitionTimer(IN:=FALSE);
+				gMachine.testCell.state := TEST_STATE.CHECK_IGNITION;
+			END_IF
+		ELSE
+			ignitionDelay(IN:=FALSE);
+			ignitionTimer(IN:=FALSE);
+			errorDiagMsg := 'Ignition Attempted Without Methane';
+			gMachine.testCell.state := TEST_STATE.ERROR;	
+		END_IF
+		
+	TEST_STATE.CHECK_IGNITION: 
+		ignitionCheckTimer(IN:=TRUE, PT:=T#1S);
+		IF ignitionCheckTimer.Q THEN
+			ignitionCheckTimer(IN:=FALSE);
+			IF gScaledIO.monitoredValues[7].scaledValue > gMachineSettings.safetyParameters.minCombustorPressure THEN
+				gMachine.testCell.state := TEST_STATE.WAIT_FOR_SEED;	
+			ELSE
+				errorDiagMsg := 'Ignition failure, no combustion occured';
+				gMachine.testCell.state := TEST_STATE.ERROR;	
+			END_IF
+		END_IF
+	
+	TEST_STATE.WAIT_FOR_SEED:
+		IF command_StartSeed THEN
+			gMachine.testCell.state := TEST_STATE.RUN_TEST;
+		END_IF
+		
 	
 	TEST_STATE.RUN_TEST:
+		//Start time based systems
+		testTimer(IN:=TRUE, PT:=MAX(gMachineSettings.testParameters.ZVSIgniteOffTime, 
+									gMachineSettings.testParameters.MethaneSolenoidOffTime, 
+									gMachineSettings.testParameters.SeederExtendSolenoidOffTime, 
+									gMachineSettings.testParameters.FluidizationSolenoidOffTime));
 		gMachine.testCell.TSIG_ZVSIgnite(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.ZVSIgniteOnTime,End_Time:=gMachineSettings.testParameters.ZVSIgniteOffTime);
-		gMachine.testCell.TSIG_CombustorAirSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.CombustorAirSolenoidOnTime, End_Time:=gMachineSettings.testParameters.CombustorAirSolenoidOffTime);
 		gMachine.testCell.TSIG_MethaneSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.MethaneSolenoidOnTime, End_Time:=gMachineSettings.testParameters.MethaneSolenoidOffTime);
-		gMachine.testCell.TSIG_WaterQuenchSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.WaterQuenchSolenoidOnTime, End_Time:=gMachineSettings.testParameters.WaterQuenchSolenoidOffTime);
-		gMachine.testCell.TSIG_SeederExtendSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.SeederExtendSolenoidOnTime, End_Time:=gMachineSettings.testParameters.SeederExtendSolenoidOnTime);
-		gMachine.testCell.TSIG_SeederRetractSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.SeederRetractSolenoidOnTime, End_Time:=gMachineSettings.testParameters.SeederRetractSolenoidOffTime);
-		gMachine.testCell.TSIG_FluidizationSolenoid();
+		gMachine.testCell.TSIG_SeederExtendSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.SeederExtendSolenoidOnTime, End_Time:=gMachineSettings.testParameters.SeederExtendSolenoidOffTime);
+		gMachine.testCell.TSIG_FluidizationSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.FluidizationSolenoidOnTime, End_Time:=gMachineSettings.testParameters.FluidizationSolenoidOffTime);
 	
-		IF gMachine.testCell.TSIG_CombustorAirSolenoid.ET > gMachineSettings.safetyParameters.maxAirPressureDelay 
-			AND gScaledIO.monitoredValues[1].scaledValue < gMachineSettings.safetyParameters.minAirPressure THEN
+		//run watchdog tests
+		//IF gIO.DI_SeederExtendLimitSensor THEN
+		//	testTimer(IN:=FALSE);
+		//	gMachine.testCell.state := TEST_STATE.COMPLETE;
+		//END_IF
+		IF 	testTimer.Q THEN
+			testTimer(IN:=FALSE);
+			gMachine.testCell.state := TEST_STATE.COMPLETE;
+		END_IF
+		IF  gScaledIO.monitoredValues[1].scaledValue < gMachineSettings.safetyParameters.minAirPressure THEN
+			errorDiagMsg := 'Loss of air pressure during testing'; 
 			gMachine.testCell.state := TEST_STATE.ERROR;
 		END_IF
 		
-		IF gMachine.testCell.TSIG_MethaneSolenoid.ET > gMachineSettings.safetyParameters.maxMethanePressureDelay 
-			AND gScaledIO.monitoredValues[2].scaledValue < gMachineSettings.safetyParameters.minMethanePressure
-			AND NOT gMachineSettings.safetyParameters.bOverrideMethaneCheck THEN
+		IF 	gScaledIO.monitoredValues[2].scaledValue < gMachineSettings.safetyParameters.minMethanePressure THEN
+			errorDiagMsg := 'Loss of methane pressure during testing'; 
 			gMachine.testCell.state := TEST_STATE.ERROR;
 		END_IF
 		
-		IF gMachine.testCell.TSIG_ZVSIgnite.ET > gMachineSettings.safetyParameters.minIgnitionDelay 
-			AND gScaledIO.monitoredValues[7].scaledValue < gMachineSettings.safetyParameters.minCombustorPressure 
-			AND NOT gMachineSettings.safetyParameters.bOverrideIngitionCheck THEN
+		IF 	gScaledIO.monitoredValues[7].scaledValue < gMachineSettings.safetyParameters.minCombustorPressure THEN
+			errorDiagMsg := 'Loss of chamber pressure, unstarted engine';
 			gMachine.testCell.state := TEST_STATE.ERROR;
 		END_IF
 		
-		IF gScaledIO.monitoredValues[3].scaledValue < gMachineSettings.safetyParameters.minFacilityPressure 
-			AND NOT gMachineSettings.safetyParameters.bOverrideFacilityAirCheck THEN
+		IF gScaledIO.monitoredValues[4].scaledValue < gMachineSettings.safetyParameters.minFacilityPressure THEN
+			errorDiagMsg := 'Tank pressure too low during testing';
 			gMachine.testCell.state := TEST_STATE.ERROR;
 		END_IF
 		
@@ -134,7 +196,7 @@ END_VAR
 		IF command_Reset THEN
 			command_Reset := FALSE;
 			gIO.DO_Reset  := TRUE;
-			gMachine.testCell.state         := TEST_STATE.RESETTING;
+			gMachine.testCell.state := TEST_STATE.RESETTING;
 		END_IF
 		
 	TEST_STATE.RESETTING: 
@@ -152,18 +214,22 @@ END_CASE
       <LineId Id="19" Count="3" />
       <LineId Id="174" Count="6" />
       <LineId Id="173" Count="0" />
-      <LineId Id="27" Count="26" />
-      <LineId Id="182" Count="0" />
-      <LineId Id="187" Count="0" />
-      <LineId Id="248" Count="0" />
-      <LineId Id="188" Count="1" />
-      <LineId Id="205" Count="1" />
-      <LineId Id="250" Count="1" />
-      <LineId Id="207" Count="3" />
-      <LineId Id="252" Count="1" />
-      <LineId Id="211" Count="3" />
-      <LineId Id="254" Count="0" />
-      <LineId Id="215" Count="1" />
+      <LineId Id="27" Count="15" />
+      <LineId Id="271" Count="9" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="290" Count="15" />
+      <LineId Id="289" Count="0" />
+      <LineId Id="306" Count="0" />
+      <LineId Id="308" Count="9" />
+      <LineId Id="307" Count="0" />
+      <LineId Id="318" Count="0" />
+      <LineId Id="320" Count="3" />
+      <LineId Id="319" Count="0" />
+      <LineId Id="288" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="325" Count="36" />
+      <LineId Id="216" Count="0" />
       <LineId Id="185" Count="0" />
       <LineId Id="55" Count="0" />
       <LineId Id="191" Count="6" />
@@ -173,8 +239,9 @@ END_CASE
       <LineId Id="241" Count="6" />
       <LineId Id="232" Count="8" />
       <LineId Id="126" Count="0" />
-      <LineId Id="129" Count="4" />
-      <LineId Id="135" Count="8" />
+      <LineId Id="129" Count="2" />
+      <LineId Id="267" Count="3" />
+      <LineId Id="137" Count="6" />
       <LineId Id="146" Count="1" />
       <LineId Id="159" Count="1" />
       <LineId Id="9" Count="0" />
