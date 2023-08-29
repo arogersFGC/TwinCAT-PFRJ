@@ -36,9 +36,9 @@ END_VAR
 	
 	monitoredValues[3].rawValueMin       := 0;
 	monitoredValues[3].rawValueMax       := 32767; 
-	monitoredValues[3].scaledValueMin    := 0;
+	monitoredValues[3].scaledValueMin    := -14.7;
 	monitoredValues[3].scaledValueMax    := 30;
-	monitoredValues[3].units             := 'psia';
+	monitoredValues[3].units             := 'psig';
 	monitoredValues[3].lowerWarningValue := 0;
 	monitoredValues[3].upperWarningValue := 30;
 	monitoredValues[3].dbName            := 'ejector pressure';
@@ -72,8 +72,8 @@ END_VAR
 	
 	monitoredValues[7].rawValueMin       := 0;
 	monitoredValues[7].rawValueMax       := 32767; 
-	monitoredValues[7].scaledValueMin    := 0;
-	monitoredValues[7].scaledValueMax    := 300;
+	monitoredValues[7].scaledValueMin    := -14.7;
+	monitoredValues[7].scaledValueMax    := 100;
 	monitoredValues[7].units             := '';
 	monitoredValues[7].lowerWarningValue := 0;
 	monitoredValues[7].upperWarningValue := 100;

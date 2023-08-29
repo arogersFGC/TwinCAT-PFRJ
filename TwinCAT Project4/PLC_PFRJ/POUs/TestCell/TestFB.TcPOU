@@ -23,7 +23,12 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[CASE gMachine.testCell.state OF
+      <ST><![CDATA[IF command_StopTest THEN
+	command_StopTest := FALSE;
+	gMachine.testCell.state := TEST_STATE.STOP;
+END_IF
+
+CASE gMachine.testCell.state OF
 	TEST_STATE.STARTUP:
 		IF bStartup THEN
 			bStartup := FALSE;
@@ -53,7 +58,7 @@ END_VAR
 	TEST_STATE.START_TEST:
 		gIO.DO_CollectData := TRUE;
 		gIO.DO_CombustorAirSolenoid := TRUE;
-		methaneStartUpDelay(IN:=TRUE, PT:=T#10S);
+		methaneStartUpDelay(IN:=TRUE, PT:=T#2S);
 		IF methaneStartUpDelay.Q THEN
 			IF gScaledIO.monitoredValues[1].scaledValue > gMachineSettings.safetyParameters.minAirPressure THEN
 				methaneStartUpDelay(IN:=FALSE);
@@ -71,7 +76,7 @@ END_VAR
 		IF ignitionDelay.Q THEN
 			IF gScaledIO.monitoredValues[2].scaledValue > gMachineSettings.safetyParameters.minMethanePressure THEN 
 				gIO.DO_ZVSIgnite := TRUE;
-				ignitionTimer(IN:=TRUE, PT:=T#1S);
+				ignitionTimer(IN:=TRUE, PT:=T#4S);
 				IF ignitionTimer.Q THEN
 					gIO.DO_ZVSIgnite := FALSE;
 					ignitionDelay(IN:=FALSE);
@@ -87,7 +92,7 @@ END_VAR
 		END_IF
 		
 	TEST_STATE.CHECK_IGNITION: 
-		ignitionCheckTimer(IN:=TRUE, PT:=T#1S);
+		ignitionCheckTimer(IN:=TRUE, PT:=T#0.25S);
 		IF ignitionCheckTimer.Q THEN
 			ignitionCheckTimer(IN:=FALSE);
 			IF gScaledIO.monitoredValues[7].scaledValue > gMachineSettings.safetyParameters.minCombustorPressure THEN
@@ -103,13 +108,13 @@ END_VAR
 			gMachine.testCell.state := TEST_STATE.RUN_TEST;
 		END_IF
 		
-	
 	TEST_STATE.RUN_TEST:
 		//Start time based systems
 		testTimer(IN:=TRUE, PT:=MAX(gMachineSettings.testParameters.ZVSIgniteOffTime, 
 									gMachineSettings.testParameters.MethaneSolenoidOffTime, 
 									gMachineSettings.testParameters.SeederExtendSolenoidOffTime, 
 									gMachineSettings.testParameters.FluidizationSolenoidOffTime));
+		gIO.DO_EjectorSolenoid := TRUE;
 		gMachine.testCell.TSIG_ZVSIgnite(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.ZVSIgniteOnTime,End_Time:=gMachineSettings.testParameters.ZVSIgniteOffTime);
 		gMachine.testCell.TSIG_MethaneSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.MethaneSolenoidOnTime, End_Time:=gMachineSettings.testParameters.MethaneSolenoidOffTime);
 		gMachine.testCell.TSIG_SeederExtendSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.SeederExtendSolenoidOnTime, End_Time:=gMachineSettings.testParameters.SeederExtendSolenoidOffTime);
@@ -145,6 +150,7 @@ END_VAR
 		END_IF
 		
 	TEST_STATE.COMPLETE:
+		//reset timers
 		gMachine.testCell.TSIG_ZVSIgnite(Init:=FALSE);
 		gMachine.testCell.TSIG_CombustorAirSolenoid(Init:=FALSE);   
 		gMachine.testCell.TSIG_MethaneSolenoid(Init:=FALSE);      
@@ -152,7 +158,17 @@ END_VAR
 		gMachine.testCell.TSIG_SeederExtendSolenoid(Init:=FALSE);    
 		gMachine.testCell.TSIG_SeederRetractSolenoid(Init:=FALSE);  
 		gMachine.testCell.TSIG_FluidizationSolenoid(Init:=FALSE);   
-		gMachine.testCell.TSIG_EjectorSolenoid(Init:=FALSE);     
+		gMachine.testCell.TSIG_EjectorSolenoid(Init:=FALSE);  
+		//reset IO
+		gIO.DO_CombustorAirSolenoid := FALSE;
+		gIO.DO_MethaneSolenoid := FALSE;
+		gIO.DO_SeederExtendSolenoid := FALSE;
+		gIO.DO_SeederFluidization := FALSE;
+		gIO.DO_WaterQuenchSolenoid := FALSE;
+		gIO.DO_ZVSIgnite := FALSE;
+		gIO.DO_EjectorSolenoid := FALSE;   
+		//Go to blowdown post test
+		gMachine.testCell.state := TEST_STATE.BLOWDOWN;
 	
 	TEST_STATE.STOP:
 		//reset timers
@@ -220,6 +236,11 @@ END_CASE
 ]]></ST>
     </Implementation>
     <LineIds Name="TestFB">
+      <LineId Id="376" Count="0" />
+      <LineId Id="378" Count="0" />
+      <LineId Id="380" Count="0" />
+      <LineId Id="379" Count="0" />
+      <LineId Id="377" Count="0" />
       <LineId Id="19" Count="3" />
       <LineId Id="174" Count="6" />
       <LineId Id="173" Count="0" />
@@ -245,14 +266,20 @@ END_CASE
       <LineId Id="318" Count="0" />
       <LineId Id="320" Count="3" />
       <LineId Id="319" Count="0" />
-      <LineId Id="288" Count="0" />
       <LineId Id="46" Count="0" />
-      <LineId Id="325" Count="36" />
+      <LineId Id="325" Count="5" />
+      <LineId Id="381" Count="0" />
+      <LineId Id="331" Count="30" />
       <LineId Id="216" Count="0" />
       <LineId Id="185" Count="0" />
       <LineId Id="55" Count="0" />
+      <LineId Id="392" Count="0" />
       <LineId Id="191" Count="6" />
-      <LineId Id="73" Count="3" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="385" Count="6" />
+      <LineId Id="382" Count="0" />
+      <LineId Id="393" Count="1" />
+      <LineId Id="74" Count="2" />
       <LineId Id="198" Count="6" />
       <LineId Id="94" Count="14" />
       <LineId Id="241" Count="6" />

@@ -25,7 +25,15 @@ CASE MAIN_STATE OF
 		monitoredValueUpdate(resetDefaults:=TRUE);
 		main_state := MAIN_ST.IDLE;
 	MAIN_ST.IDLE:
-		//do nothing
+		IF gHMI.bStartButtonState THEN
+			gHMI.bStartButtonState := FALSE;
+			testFB(command_StartTest:=TRUE);
+		END_IF
+	MAIN_ST.TESTING:
+		IF gHMI.bStopButtonState THEN
+			gHMI.bStopButtonState := FALSE;
+			testFB(command_StopTest:=TRUE);
+		END_IF
 	MAIN_ST.ESTOP:
 		gMachine.testCell.state := TEST_STATE.ESTOP;
 		IF gIO.DI_ESTOP_L2 THEN
@@ -35,6 +43,7 @@ CASE MAIN_STATE OF
 		END_IF
 	MAIN_ST.WAIT_FOR_RESET:
 		IF gHMI.bReset THEN
+			gHMI.bReset := FALSE;
 			testFB(command_Reset:=TRUE);
 			main_state := MAIN_ST.RESETTING;
 		END_IF
@@ -55,11 +64,20 @@ gHMI.bEStopPressed := NOT gIO.DI_24VAtSolenoids;
       <LineId Id="1516" Count="3" />
       <LineId Id="1521" Count="4" />
       <LineId Id="1548" Count="0" />
-      <LineId Id="1526" Count="4" />
+      <LineId Id="1526" Count="0" />
+      <LineId Id="1564" Count="1" />
+      <LineId Id="1567" Count="0" />
+      <LineId Id="1566" Count="0" />
+      <LineId Id="1568" Count="2" />
+      <LineId Id="1574" Count="0" />
+      <LineId Id="1571" Count="0" />
+      <LineId Id="1528" Count="2" />
       <LineId Id="1563" Count="0" />
       <LineId Id="1559" Count="0" />
       <LineId Id="1562" Count="0" />
-      <LineId Id="1533" Count="6" />
+      <LineId Id="1533" Count="2" />
+      <LineId Id="1573" Count="0" />
+      <LineId Id="1536" Count="3" />
       <LineId Id="1542" Count="0" />
       <LineId Id="1561" Count="0" />
       <LineId Id="1560" Count="0" />
