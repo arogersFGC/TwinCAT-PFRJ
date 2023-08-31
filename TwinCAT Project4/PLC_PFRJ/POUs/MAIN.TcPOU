@@ -7,6 +7,9 @@ VAR
 	monitoredValueUpdate : MonitoredValueUpdate;
 	main_state : MAIN_ST := MAIN_ST.STARTUP;
 	hmi_FB   : HMI_FB;
+	
+	//main variables 
+	bInputError : BOOL := FALSE;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -27,12 +30,16 @@ CASE MAIN_STATE OF
 	MAIN_ST.IDLE:
 		IF gHMI.bStartButtonState THEN
 			gHMI.bStartButtonState := FALSE;
-			testFB(command_StartTest:=TRUE);
+			testFB(command_StartTest:=TRUE, bNoMethane:=NOT gHMI.bMethaneCheckBox);
 		END_IF
 	MAIN_ST.TESTING:
 		IF gHMI.bStopButtonState THEN
 			gHMI.bStopButtonState := FALSE;
 			testFB(command_StopTest:=TRUE);
+		END_IF
+		IF gHMI.bStartSeedButtonState AND NOT testFB.bSeedInhibit THEN
+			gHMI.bStartSeedButtonState := FALSE;
+			testFB(command_StartSeed := TRUE);
 		END_IF
 	MAIN_ST.ESTOP:
 		gMachine.testCell.state := TEST_STATE.ESTOP;
@@ -71,6 +78,9 @@ gHMI.bEStopPressed := NOT gIO.DI_24VAtSolenoids;
       <LineId Id="1568" Count="2" />
       <LineId Id="1574" Count="0" />
       <LineId Id="1571" Count="0" />
+      <LineId Id="1584" Count="1" />
+      <LineId Id="1587" Count="0" />
+      <LineId Id="1586" Count="0" />
       <LineId Id="1528" Count="2" />
       <LineId Id="1563" Count="0" />
       <LineId Id="1559" Count="0" />

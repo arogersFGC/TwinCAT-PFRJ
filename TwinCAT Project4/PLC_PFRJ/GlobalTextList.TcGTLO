@@ -76,6 +76,21 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"527"</v>
+              <v n="TextDefault">"Extect"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"713"</v>
+              <v n="TextDefault">"Extend"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"74"</v>
+              <v n="TextDefault">"Extendct"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"364"</v>
               <v n="TextDefault">"Fluidization"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -166,6 +181,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"608"</v>
+              <v n="TextDefault">"Retract"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"646"</v>
               <v n="TextDefault">"Retry Ignition"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -178,6 +198,11 @@
             <o>
               <v n="TextID">"440"</v>
               <v n="TextDefault">"Run Seed"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"265"</v>
+              <v n="TextDefault">"Seed Inhibit"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -246,6 +271,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"953"</v>
+              <v n="TextDefault">"Test Inhibit"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"356"</v>
               <v n="TextDefault">"Test Timer"</v>
               <l n="LanguageTexts" t="ArrayList" />
@@ -292,9 +322,9 @@
             </o>
           </l>
           <l n="Languages" t="ArrayList" />
-          <v n="GuidInit">{9c3d9ff0-c1db-4781-b1c1-038892bc1189}</v>
-          <v n="GuidReInit">{843d2f82-ffad-458e-9d14-e506049d869a}</v>
-          <v n="GuidExitX">{c2337c92-e6a0-4201-a4fe-44fda985758c}</v>
+          <v n="GuidInit">{60b7c3c8-6a81-4334-8434-3e4f653eba6d}</v>
+          <v n="GuidReInit">{a29ef4a7-3c02-4912-a43e-d3455dbbaeab}</v>
+          <v n="GuidExitX">{db97047c-53b1-489c-8a4d-637bb38fc2b0}</v>
         </o>
       </Data>
       <TypeList>

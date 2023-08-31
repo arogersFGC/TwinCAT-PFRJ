@@ -4,18 +4,19 @@
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL
 	//HMI BUTTONS
-	bStartButtonState            : BOOL;
-	bStopButtonState             : BOOL;
-	bStartSeedButton			 : BOOL;
-	bAirSolenoidButton           : BOOL;
-	bFuelSolenoidButton          : BOOL;
-	bWaterQuenchSolenoidButton   : BOOL;
-	bZVSSolenoidButton           : BOOL;
-	bFluidizationSolenoidButton  : BOOL;
-	bSeederExtendSolenoidButton  : BOOL;
-	bSeederRetractSolenoidButton : BOOL;
-	bQDCMethaneSolenoidButton    : BOOL;
-	bReset                       : BOOL;
+	bStartButtonState       		: BOOL;
+	bStopButtonState            	: BOOL;
+	bStartSeedButtonState			: BOOL;
+	bAirSolenoidButton          	: BOOL;
+	bFuelSolenoidButton         	: BOOL;
+	bMethaneCheckBox				: BOOL;
+	bWaterQuenchSolenoidButton  	: BOOL;
+	bZVSSolenoidButton          	: BOOL;
+	bFluidizationSolenoidButton 	: BOOL;
+	bSeederExtendSolenoidButton 	: BOOL;
+	bSeederRetractSolenoidButton 	: BOOL;
+	bQDCMethaneSolenoidButton    	: BOOL;
+	bReset                        	: BOOL;
 	
 	//HMI DATA FIELDS
 	iAirStartTime                : INT;
