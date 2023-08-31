@@ -13,7 +13,7 @@ END_VAR
 VAR_OUTPUT
 	errorDiagMsg		: STRING(255);
 	bStartSeedInhibit        : BOOL := FALSE;
-	bTestInhibit		: BOOL := TRUE;
+	bTestInhibit		: BOOL := FALSE;
 	bSeedInhibit		: BOOL := TRUE;
 END_VAR
 VAR
@@ -31,9 +31,6 @@ END_VAR
 	command_StopTest := FALSE;
 	gMachine.testCell.state := TEST_STATE.STOP;
 END_IF
-
-//Use inhibits
-bStartSeedInhibit := NOT (gMachine.testCell.state = TEST_STATE.WAIT_FOR_SEED);
 
 CASE gMachine.testCell.state OF
 	TEST_STATE.STARTUP:
@@ -259,8 +256,6 @@ END_CASE
       <LineId Id="378" Count="0" />
       <LineId Id="380" Count="0" />
       <LineId Id="379" Count="0" />
-      <LineId Id="421" Count="1" />
-      <LineId Id="420" Count="0" />
       <LineId Id="377" Count="0" />
       <LineId Id="19" Count="3" />
       <LineId Id="174" Count="3" />
