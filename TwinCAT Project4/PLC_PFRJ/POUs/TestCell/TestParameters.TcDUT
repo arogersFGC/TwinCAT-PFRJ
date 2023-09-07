@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TestParameters" Id="{af94bc1b-3b66-4be4-a68c-f8c27348763a}">
+    <Declaration><![CDATA[TYPE TestParameters :
+STRUCT
+	ZVSIgniteOnTime					: TIME := T#10S;
+	ZVSIgniteOffTime				: TIME := T#12S;
+	CombustorAirSolenoidOnTime		: TIME := T#0S;       
+	CombustorAirSolenoidOffTime		: TIME := T#25S;
+	MethaneSolenoidOnTime			: TIME := T#0S;
+	MethaneSolenoidOffTime			: TIME := T#0S; 
+	WaterQuenchSolenoidOnTime 		: TIME := T#0S;
+	WaterQuenchSolenoidOffTime		: TIME := T#0S;
+	SeederExtendSolenoidOnTime		: TIME := T#0S;
+	SeederExtendSolenoidOffTime		: TIME := T#0S;
+	SeederRetractSolenoidOnTime		: TIME := T#0S;
+	SeederRetractSolenoidOffTime	: TIME := T#0S;
+	FluidizationSolenoidOnTime		: TIME := T#0S;
+	FluidizationSolenoidOffTime		: TIME := T#0S;
+	EjectorSolenoidOnTime           : TIME := T#0S;
+	EjectorSolenoidOffTime          : TIME := T#0S;
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

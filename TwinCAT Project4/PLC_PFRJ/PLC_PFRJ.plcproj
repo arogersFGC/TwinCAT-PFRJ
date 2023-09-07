@@ -27,15 +27,19 @@
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
+    <Compile Include="GVLs\gMachine.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
     <Compile Include="GVLs\gMachineSettings.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
-    <Compile Include="GVLs\gScaledInputs.TcGVL">
+    <Compile Include="GVLs\gScaledIO.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
-    <Compile Include="GVLs\HMI.TcGVL">
+    <Compile Include="GVLs\gHMI.TcGVL">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
@@ -48,26 +52,36 @@
     </Compile>
     <Compile Include="POUs\DataCollection\MonitoredValueUpdate.TcPOU">
       <SubType>Code</SubType>
-      <LinkAlways>true</LinkAlways>
-    </Compile>
-    <Compile Include="POUs\DataCollection\DataCollection.TcPOU">
-      <SubType>Code</SubType>
-      <LinkAlways>true</LinkAlways>
-    </Compile>
-    <Compile Include="POUs\DataCollection\WriteToFile.TcPOU">
-      <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\DataCollection\ScaledValue.TcPOU">
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
-    <Compile Include="POUs\MAIN_STATE.TcTLEO">
+    <Compile Include="POUs\HMI\HMI_FB.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\MAIN_ST.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MAIN.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\TSIG.TcPOU">
+    <Compile Include="POUs\TestCell\TEST_STATE.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\TestCell\TestFB.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\TestCell\SafetyParameters.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\TestCell\TestCell.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\TestCell\TestParameters.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\UtilityFunctions\TSIG.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Visualization Manager.TcVMO">
@@ -82,6 +96,9 @@
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
     <Folder Include="POUs\DataCollection" />
+    <Folder Include="POUs\HMI" />
+    <Folder Include="POUs\UtilityFunctions" />
+    <Folder Include="POUs\TestCell" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
   </ItemGroup>

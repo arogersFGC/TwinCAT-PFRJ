@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="TestCell" Id="{05048cae-b89c-4154-8535-926841510c37}">
+    <Declaration><![CDATA[TYPE TestCell :
+STRUCT
+	//Watchdog timers
+	fbTON_TestTimer              :  TON;
+	fbTON_AirAtPressure          :  TON;
+	fbTon_ZVSTimer               :  TON;
+	fbTon_MethaneTimer           :  TON;
+	fbTon_SeedTime               :  TON;
+	fbTon_PistonDelay            :  TON;
+	fbTon_PowderIgnitionDelay	 :  TON;
+	fbTon_EjectorDelay           :  TON;
+	fbTon_ZVSTrigger             :  TON;
+	
+	//Test Signals and Pulse Generators
+	TSIG_ZVSIgnite               :  TSIG;
+	TSIG_CombustorAirSolenoid    :  TSIG;
+	TSIG_MethaneSolenoid         :  TSIG;
+	TSIG_WaterQuenchSolenoid     :  TSIG;
+	TSIG_SeederExtendSolenoid    :  TSIG;
+	TSIG_SeederRetractSolenoid   :  TSIG;
+	TSIG_FluidizationSolenoid    :  TSIG;
+	TSIG_EjectorSolenoid         :  TSIG;
+	
+	//MAIN PROGRAM STATE MACHINE
+	state : TEST_STATE := TEST_STATE.STARTUP;
+	
+	//HMI_Commands
+	command_StartTest : BOOL;
+	command_StopTest  : BOOL;
+	command_Reset     : BOOL;
+	command_RunSeed   : BOOL := FALSE;
+	
+	//test variables
+	testComplete     : BOOL;
+	testTime         : TIME;
+	airPressureTime  : TIME := T#2S;
+
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,17 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
-  <POU Name="MonitoredValueUpdate" Id="{368df2b5-062f-4a79-a0cb-61ce99315c9c}" SpecialFunc="None">
-    <Declaration><![CDATA[PROGRAM MonitoredValueUpdate
+  <POU Name="MonitoredValueUpdate" Id="{03b5f9c8-a305-4000-98e6-79edc0c85325}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK MonitoredValueUpdate
+VAR_INPUT
+	resetDefaults : BOOL := TRUE;
+END_VAR
+VAR_OUTPUT
+END_VAR
 VAR
 	//Declare the array of monitored values
 	monitoredValues : ARRAY[0..16] OF MonitoredValue;
-	
-	//give a variable to reset the values
-	resetDefaults   : BOOL  := TRUE;
-	
 END_VAR
-
-
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF resetDefaults THEN
@@ -37,9 +36,9 @@ END_VAR
 	
 	monitoredValues[3].rawValueMin       := 0;
 	monitoredValues[3].rawValueMax       := 32767; 
-	monitoredValues[3].scaledValueMin    := 0;
+	monitoredValues[3].scaledValueMin    := -14.7;
 	monitoredValues[3].scaledValueMax    := 30;
-	monitoredValues[3].units             := 'psia';
+	monitoredValues[3].units             := 'psig';
 	monitoredValues[3].lowerWarningValue := 0;
 	monitoredValues[3].upperWarningValue := 30;
 	monitoredValues[3].dbName            := 'ejector pressure';
@@ -73,8 +72,8 @@ END_VAR
 	
 	monitoredValues[7].rawValueMin       := 0;
 	monitoredValues[7].rawValueMax       := 32767; 
-	monitoredValues[7].scaledValueMin    := 0;
-	monitoredValues[7].scaledValueMax    := 300;
+	monitoredValues[7].scaledValueMin    := -14.7;
+	monitoredValues[7].scaledValueMax    := 100;
 	monitoredValues[7].units             := '';
 	monitoredValues[7].lowerWarningValue := 0;
 	monitoredValues[7].upperWarningValue := 100;
@@ -116,53 +115,12 @@ monitoredValues[7].scaledValue := ScaledValue(monitoredValues[7]);
 monitoredValues[8].rawValue := gIO.AI_LoadCellWeight;
 monitoredValues[8].scaledValue := ScaledValue(monitoredValues[8]);
 
-gScaledInputs.monitoredValues := monitoredValues;
+gScaledIO.monitoredValues := monitoredValues;
 ]]></ST>
     </Implementation>
     <LineIds Name="MonitoredValueUpdate">
-      <LineId Id="138" Count="0" />
-      <LineId Id="171" Count="0" />
-      <LineId Id="143" Count="0" />
-      <LineId Id="145" Count="25" />
-      <LineId Id="193" Count="0" />
-      <LineId Id="195" Count="6" />
-      <LineId Id="194" Count="0" />
-      <LineId Id="204" Count="0" />
-      <LineId Id="206" Count="7" />
-      <LineId Id="225" Count="0" />
-      <LineId Id="227" Count="6" />
-      <LineId Id="226" Count="0" />
-      <LineId Id="234" Count="0" />
-      <LineId Id="237" Count="6" />
-      <LineId Id="235" Count="0" />
-      <LineId Id="244" Count="0" />
-      <LineId Id="246" Count="6" />
-      <LineId Id="245" Count="0" />
-      <LineId Id="236" Count="0" />
-      <LineId Id="192" Count="0" />
-      <LineId Id="141" Count="0" />
-      <LineId Id="139" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="88" Count="0" />
-      <LineId Id="173" Count="1" />
-      <LineId Id="172" Count="0" />
-      <LineId Id="175" Count="1" />
-      <LineId Id="90" Count="0" />
-      <LineId Id="179" Count="0" />
-      <LineId Id="178" Count="0" />
-      <LineId Id="177" Count="0" />
-      <LineId Id="264" Count="0" />
-      <LineId Id="267" Count="0" />
-      <LineId Id="265" Count="1" />
-      <LineId Id="268" Count="0" />
-      <LineId Id="89" Count="0" />
-      <LineId Id="271" Count="1" />
-      <LineId Id="270" Count="0" />
-      <LineId Id="274" Count="1" />
-      <LineId Id="273" Count="0" />
-      <LineId Id="269" Count="0" />
-      <LineId Id="86" Count="0" />
-      <LineId Id="85" Count="0" />
+      <LineId Id="22" Count="102" />
+      <LineId Id="9" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

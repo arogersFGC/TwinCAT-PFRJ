@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="TestFB" Id="{4ccabcbe-2adc-4f87-a510-41641d4b21c7}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TestFB
+VAR_INPUT
+	//Test inputs
+	command_StartTest : BOOL;
+	command_StopTest  : BOOL;
+	command_Reset     : BOOL;
+	command_StartSeed : BOOL;
+END_VAR
+VAR_OUTPUT
+	errorDiagMsg		: STRING(255);
+	bStartSeedInhibit        : BOOL := FALSE;
+	bTestInhibit		: BOOL := FALSE;
+END_VAR
+VAR
+	bStartup          : BOOL  := TRUE;
+	methaneStartUpDelay		: TON;
+	methaneSettingTime		: TON;
+	ignitionTimer       	: TON;
+	ignitionDelay 			: TON;
+	ignitionCheckTimer		: TON;
+	testTimer				: TON;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF command_StopTest THEN
+	command_StopTest := FALSE;
+	gMachine.testCell.state := TEST_STATE.STOP;
+END_IF
+
+//Use inhibits
+bStartSeedInhibit := NOT (gMachine.testCell.state = TEST_STATE.WAIT_FOR_SEED);
+
+CASE gMachine.testCell.state OF
+	TEST_STATE.STARTUP:
+		IF bStartup THEN
+			bStartup := FALSE;
+			gMachine.testCell.TSIG_ZVSIgnite(Init:=FALSE, pIO:=ADR(gIO.DO_ZVSIgnite));
+			gMachine.testCell.TSIG_CombustorAirSolenoid(Init:=FALSE, pIO:=ADR(gIO.DO_CombustorAirSolenoid));   
+			gMachine.testCell.TSIG_MethaneSolenoid(Init:=FALSE, pIO:=ADR(gIO.DO_MethaneSolenoid));      
+			gMachine.testCell.TSIG_WaterQuenchSolenoid(Init:=FALSE, pIO:=ADR(gIO.DO_WaterQuenchSolenoid));  
+			gMachine.testCell.TSIG_SeederExtendSolenoid(Init:=FALSE, pIO:=ADR(gIO.DO_SeederExtendSolenoid));    
+			gMachine.testCell.TSIG_SeederRetractSolenoid(Init:=FALSE, pIO:=ADR(gIO.DO_SeederRetractSolenoid));  
+			gMachine.testCell.TSIG_FluidizationSolenoid(Init:=FALSE, pIO:=ADR(gIO.DO_SeederFluidization));   
+			gMachine.testCell.TSIG_EjectorSolenoid(Init:=FALSE, pIO:=ADR(gIO.DO_EjectorSolenoid));     
+			gMachine.testCell.state := TEST_STATE.IDLE;	
+		END_IF
+		
+	TEST_STATE.IDLE:
+		//Make sure all timers are reset from the idle state
+		IF command_StartTest THEN
+			command_StartTest := FALSE;
+			gMachine.testCell.state := TEST_STATE.CHECK_TEST_READY;
+		END_IF
+		
+	TEST_STATE.CHECK_TEST_READY:
+		gMachine.testCell.state := TEST_STATE.SET_TEST_VARIABLES;
+		
+	TEST_STATE.SET_TEST_VARIABLES:
+		gMachine.testCell.state := TEST_STATE.START_TEST;
+	TEST_STATE.START_TEST:
+		gIO.DO_CollectData := TRUE;
+		gIO.DO_CombustorAirSolenoid := TRUE;
+		methaneStartUpDelay(IN:=TRUE, PT:=T#2S);
+		IF methaneStartUpDelay.Q THEN
+			IF gScaledIO.monitoredValues[1].scaledValue > gMachineSettings.safetyParameters.minAirPressure THEN
+				methaneStartUpDelay(IN:=FALSE);
+				gIO.DO_MethaneSolenoid := TRUE;
+				gMachine.testCell.state := TEST_STATE.START_IGNITION;
+			ELSE
+				methaneStartUpDelay(IN:=FALSE);
+				errorDiagMsg := 'Methane flow attempted without air';
+				gMachine.testCell.state := TEST_STATE.ERROR;
+			END_IF
+		END_IF
+	
+	TEST_STATE.START_IGNITION:
+		ignitionDelay(IN:=TRUE, PT:=T#1S);
+		IF ignitionDelay.Q THEN
+			IF gScaledIO.monitoredValues[2].scaledValue > gMachineSettings.safetyParameters.minMethanePressure THEN 
+				gIO.DO_ZVSIgnite := TRUE;
+				ignitionTimer(IN:=TRUE, PT:=T#4S);
+				IF ignitionTimer.Q THEN
+					gIO.DO_ZVSIgnite := FALSE;
+					ignitionDelay(IN:=FALSE);
+					ignitionTimer(IN:=FALSE);
+					gMachine.testCell.state := TEST_STATE.CHECK_IGNITION;
+				END_IF
+			ELSE
+				ignitionDelay(IN:=FALSE);
+				ignitionTimer(IN:=FALSE);
+				errorDiagMsg := 'Ignition Attempted Without Methane';
+				gMachine.testCell.state := TEST_STATE.ERROR;	
+			END_IF
+		END_IF
+		
+	TEST_STATE.CHECK_IGNITION: 
+		ignitionCheckTimer(IN:=TRUE, PT:=T#0.25S);
+		IF ignitionCheckTimer.Q THEN
+			ignitionCheckTimer(IN:=FALSE);
+			IF gScaledIO.monitoredValues[7].scaledValue > gMachineSettings.safetyParameters.minCombustorPressure THEN
+				gMachine.testCell.state := TEST_STATE.WAIT_FOR_SEED;	
+			ELSE
+				errorDiagMsg := 'Ignition failure, no combustion occured';
+				gMachine.testCell.state := TEST_STATE.ERROR;	
+			END_IF
+		END_IF
+	
+	TEST_STATE.WAIT_FOR_SEED:
+		IF command_StartSeed THEN
+			gMachine.testCell.state := TEST_STATE.RUN_TEST;
+		END_IF
+		
+	TEST_STATE.RUN_TEST:
+		//Start time based systems
+		testTimer(IN:=TRUE, PT:=MAX(gMachineSettings.testParameters.ZVSIgniteOffTime, 
+									gMachineSettings.testParameters.MethaneSolenoidOffTime, 
+									gMachineSettings.testParameters.SeederExtendSolenoidOffTime, 
+									gMachineSettings.testParameters.FluidizationSolenoidOffTime));
+		gIO.DO_EjectorSolenoid := TRUE;
+		gMachine.testCell.TSIG_ZVSIgnite(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.ZVSIgniteOnTime,End_Time:=gMachineSettings.testParameters.ZVSIgniteOffTime);
+		gMachine.testCell.TSIG_MethaneSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.MethaneSolenoidOnTime, End_Time:=gMachineSettings.testParameters.MethaneSolenoidOffTime);
+		gMachine.testCell.TSIG_SeederExtendSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.SeederExtendSolenoidOnTime, End_Time:=gMachineSettings.testParameters.SeederExtendSolenoidOffTime);
+		gMachine.testCell.TSIG_FluidizationSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.FluidizationSolenoidOnTime, End_Time:=gMachineSettings.testParameters.FluidizationSolenoidOffTime);
+	
+		//run watchdog tests
+		//IF gIO.DI_SeederExtendLimitSensor THEN
+		//	testTimer(IN:=FALSE);
+		//	gMachine.testCell.state := TEST_STATE.COMPLETE;
+		//END_IF
+		IF 	testTimer.Q THEN
+			testTimer(IN:=FALSE);
+			gMachine.testCell.state := TEST_STATE.COMPLETE;
+		END_IF
+		IF  gScaledIO.monitoredValues[1].scaledValue < gMachineSettings.safetyParameters.minAirPressure THEN
+			errorDiagMsg := 'Loss of air pressure during testing'; 
+			gMachine.testCell.state := TEST_STATE.ERROR;
+		END_IF
+		
+		IF 	gScaledIO.monitoredValues[2].scaledValue < gMachineSettings.safetyParameters.minMethanePressure THEN
+			errorDiagMsg := 'Loss of methane pressure during testing'; 
+			gMachine.testCell.state := TEST_STATE.ERROR;
+		END_IF
+		
+		IF 	gScaledIO.monitoredValues[7].scaledValue < gMachineSettings.safetyParameters.minCombustorPressure THEN
+			errorDiagMsg := 'Loss of chamber pressure, unstarted engine';
+			gMachine.testCell.state := TEST_STATE.ERROR;
+		END_IF
+		
+		IF gScaledIO.monitoredValues[4].scaledValue < gMachineSettings.safetyParameters.minFacilityPressure THEN
+			errorDiagMsg := 'Tank pressure too low during testing';
+			gMachine.testCell.state := TEST_STATE.ERROR;
+		END_IF
+		
+	TEST_STATE.COMPLETE:
+		//reset timers
+		gMachine.testCell.TSIG_ZVSIgnite(Init:=FALSE);
+		gMachine.testCell.TSIG_CombustorAirSolenoid(Init:=FALSE);   
+		gMachine.testCell.TSIG_MethaneSolenoid(Init:=FALSE);      
+		gMachine.testCell.TSIG_WaterQuenchSolenoid(Init:=FALSE);  
+		gMachine.testCell.TSIG_SeederExtendSolenoid(Init:=FALSE);    
+		gMachine.testCell.TSIG_SeederRetractSolenoid(Init:=FALSE);  
+		gMachine.testCell.TSIG_FluidizationSolenoid(Init:=FALSE);   
+		gMachine.testCell.TSIG_EjectorSolenoid(Init:=FALSE);  
+		//reset IO
+		gIO.DO_CombustorAirSolenoid := FALSE;
+		gIO.DO_MethaneSolenoid := FALSE;
+		gIO.DO_SeederExtendSolenoid := FALSE;
+		gIO.DO_SeederFluidization := FALSE;
+		gIO.DO_WaterQuenchSolenoid := FALSE;
+		gIO.DO_ZVSIgnite := FALSE;
+		gIO.DO_EjectorSolenoid := FALSE;   
+		//Go to blowdown post test
+		gMachine.testCell.state := TEST_STATE.BLOWDOWN;
+	
+	TEST_STATE.STOP:
+		//reset timers
+		gMachine.testCell.TSIG_ZVSIgnite(Init:=FALSE);
+		gMachine.testCell.TSIG_CombustorAirSolenoid(Init:=FALSE);   
+		gMachine.testCell.TSIG_MethaneSolenoid(Init:=FALSE);      
+		gMachine.testCell.TSIG_WaterQuenchSolenoid(Init:=FALSE);  
+		gMachine.testCell.TSIG_SeederExtendSolenoid(Init:=FALSE);    
+		gMachine.testCell.TSIG_SeederRetractSolenoid(Init:=FALSE);  
+		gMachine.testCell.TSIG_FluidizationSolenoid(Init:=FALSE);   
+		gMachine.testCell.TSIG_EjectorSolenoid(Init:=FALSE);     
+		gMachine.testCell.state := TEST_STATE.BLOWDOWN;
+		//run purge air 
+	TEST_STATE.BLOWDOWN:
+		gMachine.testCell.TSIG_CombustorAirSolenoid(Init:=TRUE, Start_Time := INT_TO_TIME(0), End_Time := INT_TO_TIME(5000));
+		gHMI.iBlowdownTimeProgress := REAL_TO_INT(TIME_TO_INT(gMachine.testCell.TSIG_CombustorAirSolenoid.ET - gMachine.testCell.TSIG_CombustorAirSolenoid.Start_Time) * (100) / TIME_TO_INT(gMachine.testCell.TSIG_CombustorAirSolenoid.End_Time - gMachine.testCell.TSIG_CombustorAirSolenoid.Start_Time));
+		IF NOT gMachine.testCell.TSIG_CombustorAirSolenoid.Q THEN
+			gMachine.testCell.state := TEST_STATE.BLOWDOWN_COMPLETE;
+		END_IF
+	TEST_STATE.BLOWDOWN_COMPLETE:
+		gMachine.testCell.TSIG_CombustorAirSolenoid(Init:=FALSE);
+		gHMI.iBlowdownTimeProgress := 0;
+		gMachine.testCell.state := TEST_STATE.IDLE;
+		
+	TEST_STATE.ESTOP: 
+		gMachine.testCell.TSIG_ZVSIgnite(Init:=FALSE);
+		gMachine.testCell.TSIG_CombustorAirSolenoid(Init:=FALSE);   
+		gMachine.testCell.TSIG_MethaneSolenoid(Init:=FALSE);      
+		gMachine.testCell.TSIG_WaterQuenchSolenoid(Init:=FALSE);  
+		gMachine.testCell.TSIG_SeederExtendSolenoid(Init:=FALSE);    
+		gMachine.testCell.TSIG_SeederRetractSolenoid(Init:=FALSE);  
+		gMachine.testCell.TSIG_FluidizationSolenoid(Init:=FALSE);   
+		gMachine.testCell.TSIG_EjectorSolenoid(Init:=FALSE);    
+		
+		//reset IO
+		gIO.DO_CombustorAirSolenoid := FALSE;
+		gIO.DO_MethaneSolenoid := FALSE;
+		gIO.DO_SeederExtendSolenoid := FALSE;
+		gIO.DO_SeederFluidization := FALSE;
+		gIO.DO_WaterQuenchSolenoid := FALSE;
+		gIO.DO_ZVSIgnite := FALSE;
+		gIO.DO_EjectorSolenoid := FALSE;
+	
+			
+	TEST_STATE.WAIT_FOR_RESET:
+		IF command_Reset THEN
+			command_Reset := FALSE;
+			gIO.DO_Reset  := TRUE;
+			gMachine.testCell.state := TEST_STATE.RESETTING;
+		END_IF
+		
+	TEST_STATE.RESETTING: 
+		IF gIO.DI_24VAtSolenoids THEN
+			gIO.DO_Reset := FALSE;
+			gMachine.testCell.state := TEST_STATE.IDLE;
+		END_IF	
+	
+	TEST_STATE.ERROR: 
+		gMachine.testCell.state := TEST_STATE.STOP;
+		
+END_CASE
+
+
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="TestFB">
+      <LineId Id="376" Count="0" />
+      <LineId Id="378" Count="0" />
+      <LineId Id="380" Count="0" />
+      <LineId Id="379" Count="0" />
+      <LineId Id="421" Count="1" />
+      <LineId Id="420" Count="0" />
+      <LineId Id="377" Count="0" />
+      <LineId Id="19" Count="3" />
+      <LineId Id="174" Count="6" />
+      <LineId Id="173" Count="0" />
+      <LineId Id="27" Count="15" />
+      <LineId Id="271" Count="3" />
+      <LineId Id="363" Count="0" />
+      <LineId Id="275" Count="3" />
+      <LineId Id="362" Count="0" />
+      <LineId Id="279" Count="1" />
+      <LineId Id="364" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="290" Count="2" />
+      <LineId Id="365" Count="0" />
+      <LineId Id="293" Count="6" />
+      <LineId Id="370" Count="0" />
+      <LineId Id="301" Count="4" />
+      <LineId Id="369" Count="0" />
+      <LineId Id="289" Count="0" />
+      <LineId Id="306" Count="0" />
+      <LineId Id="308" Count="9" />
+      <LineId Id="307" Count="0" />
+      <LineId Id="318" Count="0" />
+      <LineId Id="320" Count="3" />
+      <LineId Id="319" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="325" Count="5" />
+      <LineId Id="381" Count="0" />
+      <LineId Id="331" Count="30" />
+      <LineId Id="216" Count="0" />
+      <LineId Id="185" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="392" Count="0" />
+      <LineId Id="191" Count="6" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="385" Count="6" />
+      <LineId Id="382" Count="0" />
+      <LineId Id="393" Count="1" />
+      <LineId Id="74" Count="2" />
+      <LineId Id="198" Count="6" />
+      <LineId Id="94" Count="14" />
+      <LineId Id="241" Count="6" />
+      <LineId Id="232" Count="8" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="129" Count="2" />
+      <LineId Id="267" Count="3" />
+      <LineId Id="137" Count="6" />
+      <LineId Id="371" Count="2" />
+      <LineId Id="375" Count="0" />
+      <LineId Id="146" Count="1" />
+      <LineId Id="159" Count="1" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

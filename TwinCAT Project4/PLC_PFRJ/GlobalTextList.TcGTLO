@@ -111,6 +111,11 @@
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"908"</v>
+              <v n="TextDefault">"Manual Data Collection"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"591"</v>
               <v n="TextDefault">"Manual Inputs"</v>
               <l n="LanguageTexts" t="ArrayList" />
