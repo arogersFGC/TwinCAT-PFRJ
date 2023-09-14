@@ -19,10 +19,10 @@ END_VAR
 	monitoredValues[1].rawValueMin       := 0;
 	monitoredValues[1].rawValueMax       := 32767; 
 	monitoredValues[1].scaledValueMin    := 0;
-	monitoredValues[1].scaledValueMax    := 100;
+	monitoredValues[1].scaledValueMax    := 200;
 	monitoredValues[1].units             := 'psig';
 	monitoredValues[1].lowerWarningValue := 0;
-	monitoredValues[1].upperWarningValue := 80;
+	monitoredValues[1].upperWarningValue := 180;
 	monitoredValues[1].dbName            := 'air inlet pressure';
 	
 	monitoredValues[2].rawValueMin       := 0;
