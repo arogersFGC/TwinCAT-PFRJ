@@ -112,6 +112,7 @@ CASE gMachine.testCell.state OF
 	TEST_STATE.WAIT_FOR_SEED:
 		bSeedInhibit := FALSE;
 		IF command_StartSeed THEN
+			command_StartSeed := FALSE;
 			gMachine.testCell.state := TEST_STATE.RUN_TEST;
 		END_IF
 		
@@ -122,6 +123,7 @@ CASE gMachine.testCell.state OF
 									gMachineSettings.testParameters.SeederExtendSolenoidOffTime, 
 									gMachineSettings.testParameters.FluidizationSolenoidOffTime));
 		gIO.DO_EjectorSolenoid := TRUE;
+		gIO.DO_WaterQuenchSolenoid := TRUE;
 		gMachine.testCell.TSIG_ZVSIgnite(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.ZVSIgniteOnTime,End_Time:=gMachineSettings.testParameters.ZVSIgniteOffTime);
 		gMachine.testCell.TSIG_MethaneSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.MethaneSolenoidOnTime, End_Time:=gMachineSettings.testParameters.MethaneSolenoidOffTime);
 		gMachine.testCell.TSIG_SeederExtendSolenoid(Init:=TRUE, Start_Time:=gMachineSettings.testParameters.SeederExtendSolenoidOnTime, End_Time:=gMachineSettings.testParameters.SeederExtendSolenoidOffTime);
@@ -136,25 +138,29 @@ CASE gMachine.testCell.state OF
 			testTimer(IN:=FALSE);
 			gMachine.testCell.state := TEST_STATE.COMPLETE;
 		END_IF
-		IF  gScaledIO.monitoredValues[1].scaledValue < gMachineSettings.safetyParameters.minAirPressure THEN
+		IF testTimer.ET > T#0.25S THEN
+			IF  gScaledIO.monitoredValues[1].scaledValue < gMachineSettings.safetyParameters.minAirPressure THEN
 			errorDiagMsg := 'Loss of air pressure during testing'; 
 			gMachine.testCell.state := TEST_STATE.ERROR;
+			END_IF
+			
+			IF 	(gScaledIO.monitoredValues[2].scaledValue < gMachineSettings.safetyParameters.minMethanePressure)
+				AND NOT bNoMethane THEN
+				errorDiagMsg := 'Loss of methane pressure during testing'; 
+				gMachine.testCell.state := TEST_STATE.ERROR;
+			END_IF
+			
+			IF 	gScaledIO.monitoredValues[7].scaledValue < gMachineSettings.safetyParameters.minCombustorPressure THEN
+				errorDiagMsg := 'Loss of chamber pressure, unstarted engine';
+				gMachine.testCell.state := TEST_STATE.ERROR;
+			END_IF
+			
+			IF gScaledIO.monitoredValues[4].scaledValue < gMachineSettings.safetyParameters.minFacilityPressure THEN
+				errorDiagMsg := 'Tank pressure too low during testing';
+				gMachine.testCell.state := TEST_STATE.ERROR;
+			END_IF
 		END_IF
 		
-		IF 	gScaledIO.monitoredValues[2].scaledValue < gMachineSettings.safetyParameters.minMethanePressure THEN
-			errorDiagMsg := 'Loss of methane pressure during testing'; 
-			gMachine.testCell.state := TEST_STATE.ERROR;
-		END_IF
-		
-		IF 	gScaledIO.monitoredValues[7].scaledValue < gMachineSettings.safetyParameters.minCombustorPressure THEN
-			errorDiagMsg := 'Loss of chamber pressure, unstarted engine';
-			gMachine.testCell.state := TEST_STATE.ERROR;
-		END_IF
-		
-		IF gScaledIO.monitoredValues[4].scaledValue < gMachineSettings.safetyParameters.minFacilityPressure THEN
-			errorDiagMsg := 'Tank pressure too low during testing';
-			gMachine.testCell.state := TEST_STATE.ERROR;
-		END_IF
 		
 	TEST_STATE.COMPLETE:
 		//reset timers
@@ -174,6 +180,7 @@ CASE gMachine.testCell.state OF
 		gIO.DO_EjectorSolenoid := FALSE;   
 		//Go to blowdown post test
 		bSeedInhibit := FALSE;
+		gIO.DO_CollectData := FALSE; 
 		gMachine.testCell.state := TEST_STATE.BLOWDOWN;
 	
 	TEST_STATE.STOP:
@@ -289,12 +296,18 @@ END_CASE
       <LineId Id="318" Count="0" />
       <LineId Id="320" Count="0" />
       <LineId Id="468" Count="0" />
-      <LineId Id="321" Count="2" />
+      <LineId Id="321" Count="0" />
+      <LineId Id="498" Count="0" />
+      <LineId Id="322" Count="1" />
       <LineId Id="319" Count="0" />
       <LineId Id="46" Count="0" />
       <LineId Id="325" Count="5" />
+      <LineId Id="500" Count="0" />
       <LineId Id="381" Count="0" />
-      <LineId Id="331" Count="30" />
+      <LineId Id="331" Count="12" />
+      <LineId Id="501" Count="0" />
+      <LineId Id="504" Count="18" />
+      <LineId Id="502" Count="1" />
       <LineId Id="216" Count="0" />
       <LineId Id="185" Count="0" />
       <LineId Id="55" Count="0" />
@@ -306,6 +319,7 @@ END_CASE
       <LineId Id="382" Count="0" />
       <LineId Id="393" Count="0" />
       <LineId Id="469" Count="0" />
+      <LineId Id="499" Count="0" />
       <LineId Id="394" Count="0" />
       <LineId Id="74" Count="2" />
       <LineId Id="198" Count="1" />

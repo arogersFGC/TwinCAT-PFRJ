@@ -17,6 +17,7 @@ VAR_GLOBAL
 	bSeederRetractSolenoidButton 	: BOOL;
 	bQDCMethaneSolenoidButton    	: BOOL;
 	bReset                        	: BOOL;
+	bReadyForSeed					: BOOL;
 	
 	//HMI DATA FIELDS
 	iAirStartTime                : INT;

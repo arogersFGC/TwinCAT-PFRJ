@@ -30,6 +30,7 @@ CASE MAIN_STATE OF
 	MAIN_ST.IDLE:
 		IF gHMI.bStartButtonState THEN
 			gHMI.bStartButtonState := FALSE;
+			main_state := MAIN_ST.TESTING;
 			testFB(command_StartTest:=TRUE, bNoMethane:=NOT gHMI.bMethaneCheckBox);
 		END_IF
 	MAIN_ST.TESTING:
@@ -40,6 +41,11 @@ CASE MAIN_STATE OF
 		IF gHMI.bStartSeedButtonState AND NOT testFB.bSeedInhibit THEN
 			gHMI.bStartSeedButtonState := FALSE;
 			testFB(command_StartSeed := TRUE);
+		END_IF
+		IF gMachine.testCell.state = TEST_STATE.COMPLETE 
+			OR gMachine.testCell.state = TEST_STATE.STOP
+			OR gMachine.testCell.state = TEST_STATE.ESTOP THEN
+				main_state := MAIN_ST.IDLE;
 		END_IF
 	MAIN_ST.ESTOP:
 		gMachine.testCell.state := TEST_STATE.ESTOP;
@@ -73,6 +79,7 @@ gHMI.bEStopPressed := NOT gIO.DI_24VAtSolenoids;
       <LineId Id="1548" Count="0" />
       <LineId Id="1526" Count="0" />
       <LineId Id="1564" Count="1" />
+      <LineId Id="1591" Count="0" />
       <LineId Id="1567" Count="0" />
       <LineId Id="1566" Count="0" />
       <LineId Id="1568" Count="2" />
@@ -81,6 +88,9 @@ gHMI.bEStopPressed := NOT gIO.DI_24VAtSolenoids;
       <LineId Id="1584" Count="1" />
       <LineId Id="1587" Count="0" />
       <LineId Id="1586" Count="0" />
+      <LineId Id="1592" Count="1" />
+      <LineId Id="1595" Count="1" />
+      <LineId Id="1594" Count="0" />
       <LineId Id="1528" Count="2" />
       <LineId Id="1563" Count="0" />
       <LineId Id="1559" Count="0" />

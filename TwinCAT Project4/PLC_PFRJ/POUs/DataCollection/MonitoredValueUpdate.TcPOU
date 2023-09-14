@@ -28,7 +28,7 @@ END_VAR
 	monitoredValues[2].rawValueMin       := 0;
 	monitoredValues[2].rawValueMax       := 32767; 
 	monitoredValues[2].scaledValueMin    := 0;
-	monitoredValues[2].scaledValueMax    := 100;
+	monitoredValues[2].scaledValueMax    := 300;
 	monitoredValues[2].units             := 'psig';
 	monitoredValues[2].lowerWarningValue := 0;
 	monitoredValues[2].upperWarningValue := 80;
@@ -55,7 +55,7 @@ END_VAR
 	monitoredValues[5].rawValueMin       := 0;
 	monitoredValues[5].rawValueMax       := 32767; 
 	monitoredValues[5].scaledValueMin    := 0;
-	monitoredValues[5].scaledValueMax    := 15;
+	monitoredValues[5].scaledValueMax    := 100;
 	monitoredValues[5].units             := 'psig';
 	monitoredValues[5].lowerWarningValue := 0;
 	monitoredValues[5].upperWarningValue := 15;

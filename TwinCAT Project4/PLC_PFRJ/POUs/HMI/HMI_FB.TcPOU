@@ -24,10 +24,21 @@ gMachineSettings.testParameters.FluidizationSolenoidOffTime		:= INT_TO_TIME(gHMI
 gMachineSettings.testParameters.SeederExtendSolenoidOnTime		:= INT_TO_TIME(gHMI.iSeederExtendStartTime);     
 gMachineSettings.testParameters.SeederExtendSolenoidOffTime		:= INT_TO_TIME(gHMI.iSeederExtendStopTime);        
 gMachineSettings.testParameters.SeederRetractSolenoidOnTime		:= INT_TO_TIME(gHMI.iSeederRetractStartTime);    
-gMachineSettings.testParameters.SeederRetractSolenoidOffTime	:= INT_TO_TIME(gHMI.iSeederRetractStopTime);        ]]></ST>
+gMachineSettings.testParameters.SeederRetractSolenoidOffTime	:= INT_TO_TIME(gHMI.iSeederRetractStopTime);
+gMachineSettings.testParameters.MethaneSolenoidOnTime			:= INT_TO_TIME(gHMI.iFuelStartTime);
+gMachineSettings.testParameters.MethaneSolenoidOffTime			:= INT_TO_TIME(gHMI.iFuelStopTime); 
+
+gHMI.bReadyForSeed := gMachine.testCell.state = TEST_STATE.WAIT_FOR_SEED;
+	
+     ]]></ST>
     </Implementation>
     <LineIds Name="HMI_FB">
       <LineId Id="10" Count="14" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="43" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
